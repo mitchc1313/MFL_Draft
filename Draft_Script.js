@@ -1,4 +1,26 @@
 if (document.querySelector("#options_52") || document.querySelector("#new_predraft")) {
+
+    async function pollForDraftUpdates() {
+        try {
+            const xmlDoc = await fetchLiveDraftResultsXML();
+            if (!xmlDoc) return;
+
+            const picks = Array.from(xmlDoc?.querySelectorAll("draftPick") || []);
+            const currentPickCount = picks.length;
+
+            if (currentPickCount > lastSeenDraftPickCount) {
+                console.log(`🟢 New draft pick detected! (${currentPickCount} vs ${lastSeenDraftPickCount})`);
+                lastSeenDraftPickCount = currentPickCount;
+
+                setupRosterView(); // Full re-render
+            } else {
+                console.log("⏳ No new picks yet...");
+            }
+        } catch (err) {
+            console.error("❌ Error in polling draft picks:", err);
+        }
+    }
+
     function setMobileView(view) {
         document.body.classList.remove("view-roster", "view-pool", "view-queue");
         document.body.classList.add(`view-${view}`);
@@ -1489,9 +1511,10 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
 
 
+    let lastSeenDraftPickCount = 0;
+
     document.addEventListener("DOMContentLoaded", async () => {
         const leagueId = window.league_id || window.customLeagueId;
-
 
         // 🟢 1. Load team info & bye weeks
         window.teamInfo = await fetchTeamInfo(leagueId);
@@ -1500,13 +1523,13 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         // 🟢 2. Load previous year fantasy points
         const lastYearScores = await fetchLastYearFantasyPoints();
 
-        // 🟢 4. Now safely build the UI (it uses round info)
+        // 🟢 3. Build UI
         buildPlayerPoolTable(lastYearScores);
 
-        // 🟢 5. Start the clock AFTER round info is ready
+        // 🟢 4. Start draft timer
         initLiveDraftClock();
 
-        // 🎯 Update queued buttons
+        // 🟢 5. Track queued players
         const destinationList = document.querySelector('#destination_list');
         const queuedPlayerIDs = destinationList
             ? Array.from(destinationList.options).map(opt => opt.value)
@@ -1523,16 +1546,10 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         renderQueueSidebar();
         injectMobileViewButtons();
 
-        handleResizeForMobileNav(); // Initial check in case it's < 900px on load
+        handleResizeForMobileNav();
         window.addEventListener("resize", handleResizeForMobileNav);
 
-
-        // ✅ 🔍 NOW check for #player-queue-sidebar
         const playerQueueSidebar = document.querySelector("#player-queue-sidebar");
-
-        console.log("Finished loading everything.");
-        console.log("Checking for #player-queue-sidebar...");
-
         if (playerQueueSidebar) {
             console.log("Found #player-queue-sidebar — it's NOT your turn.");
             document.body.classList.add("not-your-turn");
@@ -1540,5 +1557,15 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             console.log("Did NOT find #player-queue-sidebar — it's YOUR turn.");
             document.body.classList.add("your-turn");
         }
+
+        // 🟡 Initialize lastSeenDraftPickCount
+        const initialXml = await fetchLiveDraftResultsXML();
+        const initialPicks = Array.from(initialXml?.querySelectorAll("draftPick") || []);
+        lastSeenDraftPickCount = initialPicks.length;
+        console.log(`📌 Initialized lastSeenDraftPickCount = ${lastSeenDraftPickCount}`);
+
+        // 🔁 Start polling every 10 seconds
+        setInterval(pollForDraftUpdates, 10000);
     });
+
 }
