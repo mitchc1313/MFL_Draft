@@ -1,0 +1,760 @@
+    /* =====================
+   PAGE-SPECIFIC SETUP
+===================== */
+    #options_52,
+    #new_predraft {
+        background-color: white;
+        font-family: 'Industry', sans-serif;
+        position: relative;
+    }
+
+    #body_options_52 h3,
+    #body_new_predraft h3 {
+        font-family: 'Industry', sans-serif;
+        font-weight: 900;
+        text-align: center;
+        color: var(--dark-color);
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    #body_options_52 h4,
+    #body_new_predraft h4 {
+        font-family: 'Industry', sans-serif;
+        text-transform: uppercase;
+        font-weight: 900;
+        text-align: center;
+        color: var(--dark-color);
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    #body_options_52 input[type="button"],
+    #body_options_52 input[type="submit"],
+    #body_new_predraft input[type="button"],
+    #body_new_predraft input[type="submit"] {
+        background-color: var(--dark-color);
+        box-shadow: inset 0 0 3.5rem var(--dark-color);
+        width: 40px;
+    }
+
+    #options_52 #contentframe,
+    #body_new_predraft #contentframe {
+        visibility: hidden;
+        display: none;
+    }
+
+    /* =====================
+   LAYOUT STRUCTURE
+===================== */
+    #player-pool-layout {
+        display: grid;
+        grid-template-columns: 250px repeat(3, 1fr);
+        grid-template-rows: 140px repeat(3, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0;
+    }
+
+    #draftBoard-wrapper {
+        grid-area: 1 / 2 / 2 / 5;
+        border-bottom: solid 1px #ccc;
+        width: 100%;
+        height: 140px;
+        overflow-x: auto;
+        box-sizing: border-box;
+    }
+
+    #draftBoard {
+        grid-area: 1 / 2 / 2 / 5;
+        display: flex;
+        gap: 8px;
+        white-space: nowrap;
+        height: 135px;
+        transform-origin: top left;
+        transition: transform 0.3s ease;
+        width: max-content;
+        /* critical for scaling in wrapper */
+
+    }
+
+    #team-roster-view {
+        min-width: 250px;
+        border-right: 1px solid #ccc;
+        padding-right: 10px;
+        grid-area: 2 / 1 / 5 / 2;
+        height: 700px;
+    }
+
+    #player-pool-container {
+        grid-area: 2 / 2 / 5 / 4;
+        padding: 0 10px;
+        margin-top: 25px;
+        max-height: 675px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .your-turn #player-pool-container h3 {
+        height: 40px;
+    }
+
+    #player-pool-container h3 {
+        height: 20px;
+        width: 101%;
+    }
+
+    .your-turn #player-pool-container h3 {
+        height: 25px;
+        width: 101%;
+    }
+
+    .your-turn #player-pool-container {
+        grid-area: 2 / 2 / 5 / 5;
+    }
+
+    .player-pool-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        position: sticky;
+        top: 20px;
+        z-index: 20;
+        background: white;
+        height: 105px;
+        gap: 10px 0;
+        align-content: center;
+        flex-wrap: wrap;
+        width: 101%;
+    }
+
+    .your-turn .player-pool-header {
+        top: 25px;
+    }
+
+    .your-turn .player-pool-table th {
+        top: 130px;
+    }
+
+    #player-queue-sidebar {
+        grid-area: 2 / 4 / 5 / 5;
+        min-width: 250px;
+        flex-shrink: 0;
+        border-left: solid 1px #ccc;
+        max-height: 700px;
+        overflow-y: auto;
+        margin-top: 0px;
+    }
+
+    /* =====================
+   PLAYER POOL TABLE
+===================== */
+    .player-pool-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Industry', sans-serif;
+        margin-top: 0;
+    }
+
+    .player-pool-table th,
+    .player-pool-table td {
+        padding: 5px;
+        text-align: left;
+        border-bottom: 1px solid #ccc;
+        color: var(--dark-color);
+    }
+
+    .player-pool-table th {
+        text-transform: uppercase;
+        background: var(--dark-color);
+        font-size: 10px;
+        color: white;
+        box-shadow: none;
+        padding: 2px;
+        position: sticky;
+        top: 125px;
+        z-index: 10;
+        height: 25px;
+        border: none;
+    }
+
+    .player-pool-table td.player-rank,
+    .player-pool-table th.player-rank {
+        text-align: center;
+    }
+
+    .player-pool-table tr td:nth-child(7) {
+        text-align: center;
+    }
+
+    .player-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .player-img-wrapper {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        margin-right: 6px;
+        /* optional spacing if you’re using flex layout */
+        display: inline-block;
+        /* so it doesn’t expand the full width */
+        vertical-align: middle;
+        border: solid 1px #ccc;
+    }
+
+    .player-img,
+    .queue-img img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .player-name-wrapper .player-name {
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .player-position-td,
+    .player-team-td,
+    .bye-week-td,
+    .ly-scores-td {
+        font-size: 10px;
+    }
+
+    .player-pool-table .th-draft {
+        text-align: center;
+    }
+
+    .player-cell .player-name a {
+        font-weight: 500;
+        font-size: 12px;
+        font-family: 'Industry', sans-serif;
+    }
+
+    .sorted-asc::after {
+        content: " ▲";
+        font-size: 0.75em;
+    }
+
+    .sorted-desc::after {
+        content: " ▼";
+        font-size: 0.75em;
+    }
+
+    .round-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+
+    /* =====================
+   HEADER & FILTERS
+===================== */
+
+    .player-pool-header .queue-btn {
+        margin: 0 5px 0 30px;
+        padding: 6px 10px;
+        font-size: 10px;
+        background-color: var(--dark-color);
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        color: white;
+        height: 35px;
+    }
+
+    .player-pool-header .queue-btn.clear-btn {
+        background-color: var(--red-color);
+        margin-left: 5px;
+    }
+
+    .player-pool-header .queue-btn:hover {
+        background-color: var(--primary-color);
+    }
+
+    .player-pool-header select {
+        color: var(--dark-color);
+    }
+
+    .mobile-nav-draft {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        display: flex;
+        justify-content: space-around;
+        padding: 6px 0;
+        z-index: 999;
+        box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .mobile-nav-draft-btn {
+        flex: 1;
+        background: none;
+        border: none;
+        font-family: inherit;
+        font-size: 11px;
+        text-align: center;
+        color: var(--dark-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        padding: 6px 4px;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .mobile-nav-draft-btn i {
+        font-size: 18px;
+        color: var(--dark-color);
+        transition: color 0.2s;
+    }
+
+    .mobile-nav-draft-btn:hover {
+        background-color: #f2f2f2;
+        transform: translateY(-2px);
+    }
+
+    .mobile-nav-draft-btn.active {
+        background-color: var(--dark-color);
+        color: #fff;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .mobile-nav-draft-btn.active i {
+        color: #fff;
+    }
+
+    .mobile-nav-draft-btn.active .label {
+        color: #fff;
+    }
+
+    .fade-section {
+        animation: fadeInSlideUp 0.35s ease both;
+    }
+
+    #live-draft-clock {
+        width: 250px;
+        transition: transform 0.3s ease, transform-origin 0.3s ease;
+        transform-origin: top left;
+    }
+
+    @keyframes fadeInSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+
+    /* =====================
+   QUEUE SECTION
+===================== */
+    .queue-btn {
+        padding: 4px 10px;
+        font-size: 12px;
+        background: #eee;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-bottom: 0;
+    }
+
+    .queue-btn:hover,
+    .draft-btn:hover,
+    .queued-player:hover {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .queue-player-item {
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .queue-player-item.oddtablerow-draft {
+        background-color: #f2f2f2;
+        border-bottom: solid 1px #ddd;
+        border-top: solid 1px #ddd;
+    }
+
+    .queue-grid {
+        display: grid;
+        grid-template-columns: auto auto 1fr auto;
+        grid-template-rows: auto auto;
+        column-gap: 8px;
+        row-gap: 2px;
+        align-items: center;
+    }
+
+    .queue-num {
+        grid-row: span 2;
+        font-size: 0.8rem;
+        font-family: 'Industry', sans-serif;
+        font-weight: 900;
+        color: var(--dark-color);
+        width: 18px;
+        text-align: right;
+    }
+
+    .queue-img-wrapper {
+        grid-row: span 2;
+    }
+
+    .queue-pos {
+        grid-row: span 2;
+        font-size: 0.75rem;
+        color: #444;
+        text-transform: uppercase;
+        font-family: 'Industry', sans-serif;
+        font-weight: 900;
+        padding-right: 15px;
+    }
+
+    .queue-name {
+        font-weight: 900;
+        font-size: 14px;
+        color: var(--dark-color);
+    }
+
+    .queue-rank {
+        font-size: 11px;
+        font-weight: 400;
+        color: #858585;
+    }
+
+    .queue-team {
+        font-size: 11px;
+        color: #858585;
+    }
+
+    #queue-list {
+        padding: 0 10px;
+    }
+
+    #body_options_52 h3#queue-header,
+    #body_new_predraft h3#queue-header {
+        position: sticky;
+        top: 0;
+        margin-top: 0;
+        background-color: white;
+        height: 80px;
+        padding: 0px;
+        margin-bottom: 0;
+        padding-top: 25px;
+    }
+
+    /* =====================
+   ROSTER STYLING
+===================== */
+    .roster-line {
+        display: flex;
+        font-size: 12px;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 6px;
+        padding-left: 10px;
+    }
+
+    .roster-pos {
+        flex: 0.5;
+        font-weight: 400;
+        min-width: 45px;
+        color: var(--dark-color);
+        font-style: normal;
+    }
+
+    .roster-line.header .roster-name,
+    .roster-line.header .roster-pos,
+    .roster-line.header .roster-bye {
+        color: var(--dark-color);
+    }
+
+    .roster-empty {
+        color: #999;
+        font-style: italic;
+    }
+
+    .roster-empty .roster-name {
+        font-weight: 400;
+    }
+
+    .roster-name {
+        flex: 2;
+        font-weight: 900;
+    }
+
+    .roster-bye {
+        flex: 1;
+        font-style: normal;
+    }
+
+    .roster-line.header {
+        text-transform: uppercase;
+        font-family: 'Industry', sans-serif;
+        font-weight: 900;
+        font-size: 13px;
+        border-top: solid 3px #ccc;
+        border-bottom: solid 3px #ccc;
+        padding: 7px 0 4px 10px;
+        margin-top: 10px;
+    }
+
+    .roster-line.header .roster-pos {
+        font-weight: 900;
+    }
+
+    #roster-starters {
+        margin-top: 10px;
+    }
+
+    #body_options_52 h3.roster-h3-header,
+    #body_new_predraft h3.roster-h3-header {
+        margin: 0;
+        padding: 0;
+        height: 60px;
+        padding-top: 25px;
+        margin-top: 0;
+    }
+
+
+    /* =====================
+   DRAFT BOARD
+===================== */
+    #draftBoard .team-name {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2em;
+        max-height: 2.4em;
+        font-family: 'Industry', sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 35px;
+    }
+
+    #draftBoard .player-name {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.1;
+        font-weight: 900;
+        font-size: 0.85rem;
+        max-height: 2.4em;
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    #draftBoard .pick-number {
+        text-align: center;
+        font-family: "Industry", sans-serif;
+        font-weight: 500;
+        position: absolute;
+        bottom: 10px;
+        right: 38px;
+    }
+
+    .draft-pick .position-text {
+        white-space: normal;
+        font-family: 'Industry', sans-serif;
+        font-weight: 700;
+    }
+
+    .draft-pick.current-pick {
+        animation: var(--pulse-anim) 2s infinite;
+    }
+
+    #draft-timer-message {
+        display: none;
+    }
+
+    /* =====================
+   BUTTONS & ACTIONS
+===================== */
+    .draft-btn {
+        color: var(--dark-color);
+        background: none;
+        border: solid 2px var(--dark-color);
+        padding: 5px;
+        border-radius: 16px;
+        width: 60px;
+        font-size: 10px;
+    }
+
+    .queued-player {
+        background-color: var(--dark-color);
+        color: white;
+        border: solid 2px var(--dark-color);
+    }
+
+    /* =====================
+   UTILITIES / TEXT / COLORS
+===================== */
+    .round-divider {
+        font-family: 'Industry', sans-serif;
+        font-weight: 900;
+        color: black;
+    }
+
+    span.round-number {
+        font-size: 24px;
+        font-weight: 900;
+        font-family: 'Industry', sans-serif;
+    }
+
+    #draft-timer-message {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #b22222;
+    }
+
+    .oddtablerow,
+    .eventablerow {
+        border-bottom: solid 1px #ddd;
+    }
+
+    .oddtablerow {
+        background-color: #f2f2f2;
+    }
+
+    .oddtablerow td,
+    .eventablerow td {
+        border: none;
+    }
+
+    td.player-rank {
+        font-family: 'Industry', sans-serif;
+        font-weight: 900;
+        font-size: 10px;
+    }
+
+    @media (max-width: 900px) {
+        .draft-view {
+            display: none;
+        }
+
+        body.view-roster #team-roster-view,
+        body.view-pool #player-pool-container,
+        body.view-queue #player-queue-sidebar {
+            display: block;
+        }
+
+        #player-pool-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #draftBoard,
+        #team-roster-view,
+        #player-pool-container,
+        #player-queue-sidebar {
+            grid-area: unset;
+            /* Disable grid layout */
+            width: 100%;
+        }
+
+        #team-roster-view,
+        #player-queue-sidebar {
+            min-width: unset;
+            border-right: none;
+            padding-right: 0;
+        }
+
+        #player-queue-sidebar {
+            max-height: 450px;
+            width: 90%;
+            border-left: none;
+            margin-top: 25px;
+        }
+
+        #player-pool-container {
+            max-height: 450px;
+            min-width: 400px;
+            width: 90%;
+            overflow-x: hidden;
+        }
+
+        #team-roster-view {
+            min-width: 250px;
+            height: 650px;
+            width: 90%;
+            overflow-y: auto;
+        }
+
+        #body_options_52 h3#queue-header,
+        #body_new_predraft h3#queue-header {
+            padding-top: 0px;
+            height: 55px;
+
+        }
+
+        #live-draft-clock {
+            position: absolute;
+            width: 190px;
+            left: 0;
+            z-index: 3;
+            transform: scale(0.7);
+        }
+
+        #draftBoard {
+            transform: scale(0.7);
+        }
+
+        #draftBoard-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            height: 99px;
+        }
+
+        .player-pool-table th {
+            top: 85px;
+        }
+
+        .player-pool-header {
+            height: 65px;
+            align-content: flex-start;
+        }
+    }
+
+    @media (max-width: 980px) {
+        .player-pool-header {
+            gap: 5px 0;
+        }
+
+        .player-pool-header select,
+        .player-pool-header input {
+            font-size: 10px;
+        }
+
+        .player-pool-header .queue-btn {
+            margin: 0 0px 0 5px;
+            font-size: 9px;
+            height: 25px;
+        }
+
+        .round-wrapper {
+            font-size: 10px;
+        }
+    }
