@@ -675,7 +675,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         layout.prepend(rosterDiv);
 
         // Fetch draft results
-        const xmlUrl = `${baseURLDynamic}/fflnetdynamic${year}/${leagueId}_LEAGUE_draft_results.xml`;
+        const xmlUrl = `${baseURLDynamic}/fflnetdynamic${year}/${leagueId}_LEAGUE_draft_results.xml?_=${Date.now()}`;
 
         try {
             const res = await fetch(xmlUrl);
