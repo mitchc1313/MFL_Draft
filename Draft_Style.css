@@ -136,6 +136,10 @@
         top: 90px;
     }
 
+    .your-turn .custom-round-label {
+        display: none;
+    }
+
     #player-queue-sidebar {
         grid-area: 2 / 4 / 5 / 5;
         min-width: 250px;
