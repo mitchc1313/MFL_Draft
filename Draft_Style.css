@@ -501,6 +501,7 @@
     .roster-name {
         flex: 2;
         font-weight: 900;
+        color: var(--dark-color);
     }
 
     .roster-bye {
