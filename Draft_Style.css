@@ -24,9 +24,10 @@
         text-transform: uppercase;
         font-weight: 900;
         text-align: center;
-        color: var(--dark-color);
+        color: white;
         font-size: 14px;
         margin-bottom: 10px;
+        background-color: var(--dark-color);
     }
 
     #body_options_52 input[type="button"],
