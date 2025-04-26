@@ -37,6 +37,7 @@
         background-color: var(--dark-color);
         box-shadow: inset 0 0 3.5rem var(--dark-color);
         width: 40px;
+        border: none;
     }
 
     #options_52 #contentframe,
@@ -241,6 +242,7 @@
         font-weight: 500;
         font-size: 12px;
         font-family: 'Industry', sans-serif;
+        color: var(--dark-color);
     }
 
     .sorted-asc::after {
