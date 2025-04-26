@@ -131,7 +131,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             return {};
         }
 
-        const url = `https://www43.myfantasyleague.com/2025/export?TYPE=league&L=${leagueId}&JSON=1`;
+        const url = `https://www45.myfantasyleague.com/2025/export?TYPE=league&L=${leagueId}&JSON=1`;
 
         try {
             const res = await fetch(url);
@@ -479,7 +479,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
               <img src="${imageUrl}" alt="${fullName}" class="player-img">
             </div>
             <div class="player-name">
-              <a href="https://www43.myfantasyleague.com/${year}/player?L=${league_id}&P=${player.id}" target="_blank" rel="noopener noreferrer">${fullName}</a>
+              <a href="https://www45.myfantasyleague.com/${year}/player?L=${league_id}&P=${player.id}" target="_blank" rel="noopener noreferrer">${fullName}</a>
             </div>
           </td>
           <td class="player-position-td">${player.pos}</td>
@@ -1072,7 +1072,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         if (!leagueId || !year || !Array.isArray(playerIDs) || playerIDs.length === 0) return {};
 
         const encodedIDs = playerIDs.join("%2C");
-        const url = `https://www43.myfantasyleague.com/${year}/export?TYPE=players&L=${leagueId}&PLAYERS=${encodedIDs}&JSON=1`;
+        const url = `https://www45.myfantasyleague.com/${year}/export?TYPE=players&L=${leagueId}&PLAYERS=${encodedIDs}&JSON=1`;
 
         try {
             const res = await fetch(url);
