@@ -635,17 +635,21 @@
         color: #b22222;
     }
 
-    .oddtablerow,
-    .eventablerow {
+    #options_52 .oddtablerow,
+    #new_predraft .eventablerow
+     {
         border-bottom: solid 1px #ddd;
     }
 
-    .oddtablerow {
+    #options_52 .oddtablerow,
+    #new_predraft .oddtablerow {
         background-color: #f2f2f2;
     }
 
-    .oddtablerow td,
-    .eventablerow td {
+   #options_52 .oddtablerow td,
+   #new_predraft .oddtablerow td,
+   #options_52 .eventablerow td,
+   #new_predraft .eventablerow td {
         border: none;
     }
 
