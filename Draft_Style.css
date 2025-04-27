@@ -562,6 +562,7 @@
         text-transform: uppercase;
         text-align: center;
         margin-top: 35px;
+        word-break: break-word;
     }
 
     #draftBoard .player-name {
