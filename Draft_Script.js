@@ -923,22 +923,31 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
                 });
 
-                if (currentPickEl) {
-                    const container = document.getElementById("draftBoard-wrapper");
-                    const offset = window.innerWidth <= 900 ? 208 : 116;
+    if (currentPickEl) {
+    const container = document.getElementById("draftBoard-wrapper");
+    let offset = window.innerWidth <= 900 ? 208 : 116; // Default offsets
 
-                    setTimeout(() => {
-                        const elRect = currentPickEl.getBoundingClientRect();
-                        const containerRect = container.getBoundingClientRect();
-                        const scrollLeft = container.scrollLeft;
-                        const targetScroll = scrollLeft + (elRect.left - containerRect.left) - offset;
+    const allDraftPicks = Array.from(container.querySelectorAll(".draft-pick, .round-divider"));
+    const currentIndex = allDraftPicks.indexOf(currentPickEl);
 
-                        container.scrollTo({
-                            left: targetScroll,
-                            behavior: "smooth"
-                        });
-                    }, 50); // short delay ensures layout is ready
-                }
+    if (currentIndex > -1 && currentIndex <= 3) {
+        offset = 0; // No offset for picks 0-3
+    }
+
+    setTimeout(() => {
+        const elRect = currentPickEl.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const scrollLeft = container.scrollLeft;
+        const targetScroll = scrollLeft + (elRect.left - containerRect.left) - offset;
+
+        container.scrollTo({
+            left: targetScroll,
+            behavior: "smooth"
+        });
+        console.log("📌 Scrolled to current pick (index", currentIndex, ") with offset:", offset);
+    }, 50);
+}
+
                 console.log("✅ Draft board populated.");
             }
 
