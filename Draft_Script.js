@@ -931,7 +931,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     const currentIndex = allDraftPicks.indexOf(currentPickEl);
 
     if (currentIndex > -1 && currentIndex <= 3) {
-        offset = -500; // No offset for picks 0-3
+        offset = 500; // No offset for picks 0-3
     }
 
     setTimeout(() => {
