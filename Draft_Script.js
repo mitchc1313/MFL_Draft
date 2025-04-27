@@ -127,8 +127,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     }
 }
 
-   async function fetchTeamInfo() {
-    const leagueId = window.league_id;
+   async function fetchTeamInfo(providedLeagueId = null) {
+    const leagueId = providedLeagueId || window.league_id;
 
     if (!leagueId) {
         console.error("❌ window.league_id is not defined.");
@@ -141,10 +141,10 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const res = await fetch(url);
         const data = await res.json();
 
-        console.log("📦 league API raw data:", data); // <-- NEW
+        console.log("📦 league API raw data:", data);
         const teams = data?.league?.franchises?.franchise || [];
 
-        console.log(`📋 franchise array (${teams.length} teams):`, teams); // <-- NEW
+        console.log(`📋 franchise array (${teams.length} teams):`, teams);
 
         const teamMap = {};
         teams.forEach(team => {
@@ -153,7 +153,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             };
         });
 
-        console.log("🗺️ Mapped team IDs to names:", teamMap); // <-- NEW
+        console.log("🗺️ Mapped team IDs to names:", teamMap);
 
         return teamMap;
     } catch (err) {
@@ -161,6 +161,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         return {};
     }
 }
+
 
 
 
