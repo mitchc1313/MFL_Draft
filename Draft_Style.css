@@ -3,7 +3,6 @@
 ===================== */
     #options_52,
     #new_predraft {
-        background-color: white;
         font-family: 'Industry', sans-serif;
         position: relative;
     }
@@ -59,6 +58,9 @@
         grid-template-rows: 140px repeat(3, 1fr);
         grid-column-gap: 0px;
         grid-row-gap: 0;
+        background-color: white;
+        border: solid 2px var(--dark-color);
+        border-radius: 4px
     }
 
     #draftBoard-wrapper {
