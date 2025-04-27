@@ -564,9 +564,7 @@
         text-transform: uppercase;
         text-align: center;
         margin-top: 35px;
-        word-break: break-word;
         white-space: normal;
-        overflow-wrap: break-word; /* ✅ valid */
     }
 
     #draftBoard .player-name {
