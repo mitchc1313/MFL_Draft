@@ -237,7 +237,7 @@
     .player-team-td,
     .bye-week-td,
     .ly-scores-td {
-        font-size: 10px;
+        font-size: 9px;
     }
 
     .player-pool-table .th-draft {
@@ -246,9 +246,10 @@
 
     .player-cell .player-name a {
         font-weight: 500;
-        font-size: 12px;
+        font-size: 10px;
         font-family: 'Industry', sans-serif;
         color: var(--dark-color);
+        padding-left: 0px;
     }
 
     .sorted-asc::after {
