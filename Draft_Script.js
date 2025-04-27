@@ -743,6 +743,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                         roundDiv.style.justifyContent = "center";
                         roundDiv.style.alignItems = "center";
                         roundDiv.style.minWidth = "100px";
+                        roundDiv.style.maxWidth = "100px";
                         roundDiv.style.height = "100px";
                         roundDiv.style.textAlign = "center";
                         roundDiv.style.fontWeight = "900";
@@ -763,6 +764,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                     pickDiv.classList.add('draft-pick', `team_${franchiseId}`);
                     pickDiv.style.display = 'inline-block';
                     pickDiv.style.minWidth = '100px';
+                    pickDiv.style.maxWidth = '100px';
                     pickDiv.style.height = '100px';
                     pickDiv.style.borderRadius = '8px';
                     pickDiv.style.color = 'var(--dark-color)';
