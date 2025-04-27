@@ -832,11 +832,6 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                     const mainText = document.createElement('div');
                     // Set default class
                     mainText.className = 'team-name';
-                    mainText.style.fontWeight = '900';
-                    mainText.style.fontSize = '0.85rem';
-                    mainText.style.position = 'relative';
-                    mainText.style.zIndex = '1';
-                    mainText.style.whiteSpace = 'normal';
 
                     const positionText = document.createElement('div');
                     positionText.style.className = 'position-text';
