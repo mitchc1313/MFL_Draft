@@ -60,7 +60,9 @@
         grid-row-gap: 0;
         background-color: white;
         border: solid 2px var(--dark-color);
-        border-radius: 4px
+        border-radius: 4px;
+        height: 90vh;
+        overflow-y: hidden;
     }
 
     #draftBoard-wrapper {
@@ -95,7 +97,7 @@
 
     #player-pool-container {
         grid-area: 2 / 2 / 5 / 4;
-        padding: 0 10px;
+        padding: 0;
         margin-top: 25px;
         max-height: 675px;
         overflow-y: auto;
@@ -479,7 +481,7 @@
         font-size: 12px;
         gap: 8px;
         align-items: center;
-        margin-bottom: 6px;
+        margin-bottom: 3px;
         padding-left: 10px;
     }
 
