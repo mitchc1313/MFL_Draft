@@ -723,7 +723,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             // ✅ Draft board rendering
             if (window.draftedPlayerDetails && Array.isArray(window.draftedPlayerIDs)) {
                 const draftBoardEl = document.getElementById("draftBoard");
-                const franchiseNameMap = teamInfo || {};
+                const franchiseNameMap = window.teamInfo || {};
                 let currentPickEl = null;
                 let lastRound = null;
 
