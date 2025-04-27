@@ -92,88 +92,103 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
 
     async function fetchLastYearFantasyPoints(providedLeagueId = null) {
-        const leagueIdToUse = (providedLeagueId && !isNaN(providedLeagueId))
-            ? providedLeagueId
-            : (window.customLeagueId && !isNaN(window.customLeagueId))
-                ? window.customLeagueId
-                : leagueId;
+    const leagueIdToUse = (providedLeagueId && !isNaN(providedLeagueId))
+        ? providedLeagueId
+        : (window.customLeagueId && !isNaN(window.customLeagueId))
+            ? window.customLeagueId
+            : leagueId;
 
-        if (!leagueIdToUse || !baseURLDynamic || !year) {
-            console.error("❌ Missing required global variables: leagueId, year, or baseURLDynamic.");
-            return {};
-        }
-
-        const prevYear = parseInt(year, 10) - 1;
-        const apiURL = `${baseURLDynamic}/${prevYear}/export?TYPE=playerScores&L=${leagueIdToUse}&W=YTD&YEAR=${prevYear}&JSON=1`;
-
-        try {
-            const res = await fetch(apiURL);
-            const data = await res.json();
-
-            const scoresArray = data?.playerScores?.playerScore || [];
-            const scoresMap = {};
-            scoresArray.forEach(player => {
-                scoresMap[player.id] = player.score;
-            });
-
-            return scoresMap;
-        } catch (err) {
-            console.error("❌ Failed to fetch last year's scores:", err);
-            return {};
-        }
+    if (!leagueIdToUse || !baseURLDynamic || !year) {
+        console.error("❌ Missing required global variables: leagueId, year, or baseURLDynamic.");
+        return {};
     }
 
-    async function fetchTeamInfo() {
-        const leagueId = window.league_id;
+    const prevYear = parseInt(year, 10) - 1;
+    const apiURL = `${baseURLDynamic}/${prevYear}/export?TYPE=playerScores&L=${leagueIdToUse}&W=YTD&YEAR=${prevYear}&JSON=1`;
 
-        if (!leagueId) {
-            console.error("❌ window.league_id is not defined.");
-            return {};
-        }
+    try {
+        const res = await fetch(apiURL);
+        const data = await res.json();
 
-        const url = `https://www45.myfantasyleague.com/2025/export?TYPE=league&L=${leagueId}&JSON=1`;
+        console.log("📦 playerScores API raw data:", data); // <-- NEW
+        const scoresArray = data?.playerScores?.playerScore || [];
 
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
+        console.log(`📋 playerScores array (${scoresArray.length} players):`, scoresArray); // <-- NEW
 
-            const teams = data?.league?.franchises?.franchise || [];
-            const teamMap = {};
+        const scoresMap = {};
+        scoresArray.forEach(player => {
+            scoresMap[player.id] = player.score;
+        });
 
-            teams.forEach(team => {
-                teamMap[team.id] = {
-                    name: team.name
-                };
-            });
-
-            return teamMap;
-        } catch (err) {
-            console.error("❌ Failed to fetch team info:", err);
-            return {};
-        }
+        return scoresMap;
+    } catch (err) {
+        console.error("❌ Failed to fetch last year's scores:", err);
+        return {};
     }
+}
+
+   async function fetchTeamInfo() {
+    const leagueId = window.league_id;
+
+    if (!leagueId) {
+        console.error("❌ window.league_id is not defined.");
+        return {};
+    }
+
+    const url = `https://www45.myfantasyleague.com/2025/export?TYPE=league&L=${leagueId}&JSON=1`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        console.log("📦 league API raw data:", data); // <-- NEW
+        const teams = data?.league?.franchises?.franchise || [];
+
+        console.log(`📋 franchise array (${teams.length} teams):`, teams); // <-- NEW
+
+        const teamMap = {};
+        teams.forEach(team => {
+            teamMap[team.id] = {
+                name: team.name
+            };
+        });
+
+        console.log("🗺️ Mapped team IDs to names:", teamMap); // <-- NEW
+
+        return teamMap;
+    } catch (err) {
+        console.error("❌ Failed to fetch team info:", err);
+        return {};
+    }
+}
+
 
 
     async function fetchNFLByeWeeks(year) {
-        const url = `https://api.myfantasyleague.com/${year}/export?TYPE=nflByeWeeks&W=&JSON=1`;
+    const url = `https://api.myfantasyleague.com/${year}/export?TYPE=nflByeWeeks&W=&JSON=1`;
 
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
-            const teamArray = data?.nflByeWeeks?.team || [];
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-            const byeWeekMap = {};
-            teamArray.forEach(team => {
-                byeWeekMap[team.id] = team.bye_week || "—";
-            });
+        console.log("📦 nflByeWeeks API raw data:", data); // <-- NEW
+        const teamArray = data?.nflByeWeeks?.team || [];
 
-            // console.log("📅 NFL Bye Weeks:", byeWeekMap); // Remove or comment for production
-            return byeWeekMap;
-        } catch (err) {
-            console.error("❌ Failed to fetch bye week data:", err);
-            return {};
-        }
+        console.log(`📋 nflByeWeeks array (${teamArray.length} teams):`, teamArray); // <-- NEW
+
+        const byeWeekMap = {};
+        teamArray.forEach(team => {
+            byeWeekMap[team.id] = team.bye_week || "—";
+        });
+
+        console.log("🗺️ Mapped team bye weeks:", byeWeekMap); // <-- NEW
+
+        return byeWeekMap;
+    } catch (err) {
+        console.error("❌ Failed to fetch bye week data:", err);
+        return {};
     }
+}
 
     function getPickTimeLimitInSeconds() {
         const { value, unit } = window.pickTimeLimit || { value: 4, unit: "hours" };
