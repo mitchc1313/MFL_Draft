@@ -718,14 +718,14 @@
         }
 
         #player-queue-sidebar {
-            max-height: 456px;
+            height: 482px;
             width: 90%;
             border-left: none;
             margin-top: 25px;
         }
 
         #player-pool-container {
-            max-height: 456px;
+            height: 482px;
             min-width: 400px;
             width: 90%;
             overflow-x: hidden;
@@ -733,7 +733,7 @@
 
         #team-roster-view {
             min-width: 250px;
-            height: 456px;
+            height: 482px;
             width: 90%;
             overflow-y: auto;
         }
