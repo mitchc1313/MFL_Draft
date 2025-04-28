@@ -1,6 +1,14 @@
     /* =====================
    PAGE-SPECIFIC SETUP
 ===================== */
+
+    #body_options_52,
+    #body_new_predraft {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+
+
     #options_52,
     #new_predraft {
         font-family: 'Industry', sans-serif;
