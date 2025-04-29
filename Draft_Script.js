@@ -1526,7 +1526,7 @@ if (now < draftStartTime) {
     timerDiv.style.color = "#fff"; // reset color
 
     timerDiv.innerHTML = `
-        <div style="font-size: 16px;">Draft has not started yet</div>
+        <div style="font-size: 16px;">Draft Not Started</div>
         <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
             ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
         </div>
