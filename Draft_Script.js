@@ -1439,24 +1439,31 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const response = await fetch(url);
         const text = await response.text();
 
+        console.log("📄 Raw calendar XML:", text);
+
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
 
         const events = xmlDoc.getElementsByTagName('event');
         for (let event of events) {
-            if (event.getAttribute('type') === "DRAFT_START") {
-                const startTime = parseInt(event.getAttribute('start_time'), 10);
+            const type = event.getAttribute('type');
+            const rawStart = event.getAttribute('start_time');
+            if (type === "DRAFT_START") {
+                const startTime = parseInt(rawStart, 10);
+                console.log("✅ Found DRAFT_START event:", event.outerHTML);
+                console.log("🕒 Parsed draftStartTime:", startTime, new Date(startTime * 1000).toLocaleString());
                 return startTime;
             }
         }
 
-        console.warn("⚠️ No DRAFT_START event found in calendar.");
+        console.warn("⚠️ No event with type='DRAFT_START' found.");
         return null;
     } catch (err) {
         console.error("❌ Failed to fetch draft start time:", err);
         return null;
     }
 }
+
 
 async function initLiveDraftClock() {
     const xmlDoc = await fetchLiveDraftResultsXML();
