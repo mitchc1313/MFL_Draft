@@ -54,7 +54,8 @@
     #options_52 table.report,
     #body_new_predraft table.report,
     #options_52 .reportnavigation,
-    #body_new_predraft .reportnavigation{
+    #body_new_predraft .reportnavigation,
+    #new_predraft form[name="new_predraft"] {
         visibility: hidden;
         display: none;
     }
