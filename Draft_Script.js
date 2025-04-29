@@ -407,7 +407,6 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         draftBoardWrapper.style.overflowX = "auto";
         draftBoardWrapper.style.boxSizing = "border-box";
         draftBoardWrapper.style.padding = "0px"; // keep top padding here
-        draftBoardWrapper.style.paddingBottom = "72px";
 
         // Move your draftBoard into the wrapper
         draftBoardWrapper.appendChild(draftBoardContainer);
