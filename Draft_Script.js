@@ -1473,6 +1473,7 @@ async function initLiveDraftClock() {
     if (!meta || isNaN(meta.lastPickTime)) return;
 
     const draftStartTime = await fetchDraftStartTime();
+    console.log("📆 Final draftStartTime value:", draftStartTime);
     const pickLimitSec = getPickTimeLimitInSeconds();
     const deadline = meta.lastPickTime + pickLimitSec;
 
