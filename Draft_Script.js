@@ -1435,7 +1435,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
   async function fetchDraftStartTime() {
     try {
-        const url = `${baseURLDynamic}${year}/export?TYPE=calendar&L=${league_id}&JSON=0`;
+        const url = `${baseURLDynamic}/${year}/export?TYPE=calendar&L=${league_id}&JSON=0`;
         const response = await fetch(url);
         const text = await response.text();
 
