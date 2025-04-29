@@ -1520,7 +1520,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 clearInterval(interval);
                 timerDiv.innerHTML = `
             <div style="font-size: 16px;">${roundInfo}</div>
-            <div style="font-size: 24px;">⏰ Timer Expired</div>
+            <div style="font-size: 24px;">EXPIRED</div>
         `;
             }
         }
