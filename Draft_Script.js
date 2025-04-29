@@ -1475,6 +1475,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     `;
         container.prepend(timerDiv);
 
+        let interval;  // ✅ ADD THIS LINE EARLY, so updateClock can see it
+
         function updateClock(deadline) {
             const now = Math.floor(Date.now() / 1000);
             const remaining = Math.max(0, deadline - now);
