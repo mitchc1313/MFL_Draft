@@ -733,7 +733,7 @@
 
         #team-roster-view {
             min-width: 250px;
-            height: 482px;
+            height: 500px;
             width: 90%;
             overflow-y: auto;
         }
