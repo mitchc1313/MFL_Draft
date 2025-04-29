@@ -1433,7 +1433,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     }
 
 
-   async function fetchDraftStartTime() {
+  async function fetchDraftStartTime() {
     try {
         const url = `${baseURLDynamic}${year}/export?TYPE=calendar&L=${league_id}&JSON=0`;
         const response = await fetch(url);
@@ -1442,14 +1442,16 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
 
-        const draftEvent = xmlDoc.querySelector('event[type="DRAFT_START"]');
-        if (draftEvent) {
-            const startTime = parseInt(draftEvent.getAttribute('start_time'), 10);
-            return startTime;
-        } else {
-            console.warn("⚠️ No DRAFT_START event found in calendar.");
-            return null;
+        const events = xmlDoc.getElementsByTagName('event');
+        for (let event of events) {
+            if (event.getAttribute('type') === "DRAFT_START") {
+                const startTime = parseInt(event.getAttribute('start_time'), 10);
+                return startTime;
+            }
         }
+
+        console.warn("⚠️ No DRAFT_START event found in calendar.");
+        return null;
     } catch (err) {
         console.error("❌ Failed to fetch draft start time:", err);
         return null;
@@ -1497,35 +1499,37 @@ async function initLiveDraftClock() {
         let timeHtml = "";
 
         // 🛑 No draft scheduled
-        if (!draftStartTime) {
-            timerDiv.innerHTML = `
-                <div style="font-size: 16px;">Draft not scheduled</div>
-                <div style="font-size: 24px;">Waiting...</div>
-            `;
-            clearInterval(interval);
-            return;
-        }
+  if (draftStartTime === null) {
+    // 🛑 Draft start time not found at all
+    timerDiv.innerHTML = `
+        <div style="font-size: 16px;">Draft not scheduled</div>
+        <div style="font-size: 24px;">Waiting...</div>
+    `;
+    clearInterval(interval);
+    return;
+}
 
-        // 🟡 Draft has NOT started yet
-        if (now < draftStartTime) {
-            const fullSec = pickLimitSec;
-            const h = Math.floor(fullSec / 3600);
-            const m = Math.floor((fullSec % 3600) / 60);
+if (now < draftStartTime) {
+    // 🟡 Draft scheduled but not started yet
+    const fullSec = pickLimitSec;
+    const h = Math.floor(fullSec / 3600);
+    const m = Math.floor((fullSec % 3600) / 60);
 
-            timerDiv.style.color = "#fff"; // reset color
+    timerDiv.style.color = "#fff"; // reset color
 
-            timerDiv.innerHTML = `
-                <div style="font-size: 16px;">Draft has not started yet</div>
-                <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
-                    ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
-                </div>
-                <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
-                    <div style="width: 40px; text-align: center;">Hours</div>
-                    <div style="width: 40px; text-align: center;">Minutes</div>
-                </div>
-            `;
-            return;
-        }
+    timerDiv.innerHTML = `
+        <div style="font-size: 16px;">Draft has not started yet</div>
+        <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+            ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
+        </div>
+        <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+            <div style="width: 40px; text-align: center;">Hours</div>
+            <div style="width: 40px; text-align: center;">Minutes</div>
+        </div>
+    `;
+    return;
+}
+
 
         // 🟢 Draft has started
         const h = Math.floor(remaining / 3600);
