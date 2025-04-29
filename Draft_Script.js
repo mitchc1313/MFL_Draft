@@ -1575,7 +1575,7 @@ if (now < draftStartTime) {
             clearInterval(interval);
             timerDiv.innerHTML = `
                 <div style="font-size: 16px;">${roundInfo}</div>
-                <div style="font-size: 24px;">⏰ Timer Expired</div>
+                <div style="font-size: 24px;">EXPIRED</div>
             `;
         }
     }
