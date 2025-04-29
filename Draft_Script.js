@@ -1433,33 +1433,46 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     }
 
 
-    async function initLiveDraftClock() {
-        const xmlDoc = await fetchLiveDraftResultsXML();
-        if (!xmlDoc) return;
+   async function fetchDraftStartTime() {
+    try {
+        const url = `${baseURLDynamic}${year}/export?TYPE=calendar&L=${league_id}&JSON=0`;
+        const response = await fetch(url);
+        const text = await response.text();
 
-        const meta = parseLiveDraftMeta(xmlDoc);
-        if (!meta) {
-            console.error("❌ Draft metadata is null or undefined");
-            return;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "text/xml");
+
+        const draftEvent = xmlDoc.querySelector('event[type="DRAFT_START"]');
+        if (draftEvent) {
+            const startTime = parseInt(draftEvent.getAttribute('start_time'), 10);
+            return startTime;
+        } else {
+            console.warn("⚠️ No DRAFT_START event found in calendar.");
+            return null;
         }
+    } catch (err) {
+        console.error("❌ Failed to fetch draft start time:", err);
+        return null;
+    }
+}
 
-        if (isNaN(meta.lastPickTime)) {
-            return;
-        }
+async function initLiveDraftClock() {
+    const xmlDoc = await fetchLiveDraftResultsXML();
+    if (!xmlDoc) return;
 
-        const pickLimitSec = getPickTimeLimitInSeconds();
+    const meta = parseLiveDraftMeta(xmlDoc);
+    if (!meta || isNaN(meta.lastPickTime)) return;
 
-        const deadline = meta.lastPickTime + pickLimitSec;
+    const draftStartTime = await fetchDraftStartTime();
+    const pickLimitSec = getPickTimeLimitInSeconds();
+    const deadline = meta.lastPickTime + pickLimitSec;
 
-        const container = document.querySelector("#player-pool-layout");
+    const container = document.querySelector("#player-pool-layout");
+    if (!container) return;
 
-        if (!container) {
-            return;
-        }
-
-        const timerDiv = document.createElement("div");
-        timerDiv.id = "live-draft-clock";
-        timerDiv.style.cssText = `
+    const timerDiv = document.createElement("div");
+    timerDiv.id = "live-draft-clock";
+    timerDiv.style.cssText = `
         background: var(--dark-color);
         color: #fff;
         padding: 8px;
@@ -1473,63 +1486,99 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         flex-direction: column;
         justify-content: center;
     `;
-        container.prepend(timerDiv);
+    container.prepend(timerDiv);
 
-        let interval;  // ✅ ADD THIS LINE EARLY, so updateClock can see it
+    let interval;
 
-        function updateClock(deadline) {
-            const now = Math.floor(Date.now() / 1000);
-            const remaining = Math.max(0, deadline - now);
+    function updateClock(deadline) {
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = Math.max(0, deadline - now);
+        const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
+        let timeHtml = "";
 
-            const h = Math.floor(remaining / 3600);
-            const m = Math.floor((remaining % 3600) / 60);
-            const s = remaining % 60;
-
-            const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
-
-            let timeHtml = "";
-
-            if (h >= 1) {
-                timeHtml = `
-            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
-                ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
-            </div>
-            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
-                <div style="width: 40px; text-align: center;">Hours</div>
-                <div style="width: 40px; text-align: center;">Minutes</div>
-            </div>
-        `;
-            } else {
-                timeHtml = `
-            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
-                ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}
-            </div>
-            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
-                <div style="width: 40px; text-align: center;">Minutes</div>
-                <div style="width: 40px; text-align: center;">Seconds</div>
-            </div>
-        `;
-            }
-
+        // 🛑 No draft scheduled
+        if (!draftStartTime) {
             timerDiv.innerHTML = `
-        <div style="font-size: 16px;">${roundInfo}</div>
-        ${timeHtml}
-    `;
-
-            if (remaining <= 0) {
-                clearInterval(interval);
-                timerDiv.innerHTML = `
-            <div style="font-size: 16px;">${roundInfo}</div>
-            <div style="font-size: 24px;">EXPIRED</div>
-        `;
-            }
+                <div style="font-size: 16px;">Draft not scheduled</div>
+                <div style="font-size: 24px;">Waiting...</div>
+            `;
+            clearInterval(interval);
+            return;
         }
 
+        // 🟡 Draft has NOT started yet
+        if (now < draftStartTime) {
+            const fullSec = pickLimitSec;
+            const h = Math.floor(fullSec / 3600);
+            const m = Math.floor((fullSec % 3600) / 60);
 
-        updateClock(deadline); // ✅ Run once immediately
-        interval = setInterval(() => updateClock(deadline), 1000); // ✅ Assign without const/let
+            timerDiv.style.color = "#fff"; // reset color
 
+            timerDiv.innerHTML = `
+                <div style="font-size: 16px;">Draft has not started yet</div>
+                <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                    ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
+                </div>
+                <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                    <div style="width: 40px; text-align: center;">Hours</div>
+                    <div style="width: 40px; text-align: center;">Minutes</div>
+                </div>
+            `;
+            return;
+        }
+
+        // 🟢 Draft has started
+        const h = Math.floor(remaining / 3600);
+        const m = Math.floor((remaining % 3600) / 60);
+        const s = remaining % 60;
+
+        if (remaining <= 10) {
+            timerDiv.style.color = "#ff4d4f"; // 🔴 flash red near expiration
+        } else {
+            timerDiv.style.color = "#fff";
+        }
+
+        if (h >= 1) {
+            timeHtml = `
+                <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                    ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
+                </div>
+                <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                    <div style="width: 40px; text-align: center;">Hours</div>
+                    <div style="width: 40px; text-align: center;">Minutes</div>
+                </div>
+            `;
+        } else {
+            timeHtml = `
+                <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                    ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}
+                </div>
+                <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                    <div style="width: 40px; text-align: center;">Minutes</div>
+                    <div style="width: 40px; text-align: center;">Seconds</div>
+                </div>
+            `;
+        }
+
+        timerDiv.innerHTML = `
+            <div style="font-size: 16px;">${roundInfo}</div>
+            ${timeHtml}
+        `;
+
+        if (remaining <= 0) {
+            clearInterval(interval);
+            timerDiv.innerHTML = `
+                <div style="font-size: 16px;">${roundInfo}</div>
+                <div style="font-size: 24px;">⏰ Timer Expired</div>
+            `;
+        }
     }
+
+    updateClock(deadline);
+    interval = setInterval(() => updateClock(deadline), 1000);
+}
+
+
 
 
 
