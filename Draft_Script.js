@@ -1439,7 +1439,6 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const response = await fetch(url);
         const text = await response.text();
 
-        console.log("📄 Raw calendar XML:", text);
 
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
@@ -1450,16 +1449,12 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const rawStart = event.getAttribute('start_time');
             if (type === "DRAFT_START") {
                 const startTime = parseInt(rawStart, 10);
-                console.log("✅ Found DRAFT_START event:", event.outerHTML);
-                console.log("🕒 Parsed draftStartTime:", startTime, new Date(startTime * 1000).toLocaleString());
                 return startTime;
             }
         }
 
-        console.warn("⚠️ No event with type='DRAFT_START' found.");
         return null;
     } catch (err) {
-        console.error("❌ Failed to fetch draft start time:", err);
         return null;
     }
 }
@@ -1473,7 +1468,6 @@ async function initLiveDraftClock() {
     if (!meta || isNaN(meta.lastPickTime)) return;
 
     const draftStartTime = await fetchDraftStartTime();
-    console.log("📆 Final draftStartTime value:", draftStartTime);
     const pickLimitSec = getPickTimeLimitInSeconds();
     const deadline = meta.lastPickTime + pickLimitSec;
 
