@@ -1526,8 +1526,9 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         }
 
 
-        updateClock(deadline); // Run once immediately
-        const interval = setInterval(() => updateClock(deadline), 1000);
+        updateClock(deadline); // ✅ Run once immediately
+        interval = setInterval(() => updateClock(deadline), 1000); // ✅ Assign without const/let
+
     }
 
 
