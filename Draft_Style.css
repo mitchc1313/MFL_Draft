@@ -763,7 +763,7 @@
             overflow-y: hidden;
             height: 99px;
             padding-left: 140px!important;
-            padding-bottom: 72px;
+            padding-bottom: 72px!important;
         }
 
         .player-pool-table th {
