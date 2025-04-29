@@ -103,7 +103,8 @@
         border-right: 1px solid #ccc;
         padding-right: 10px;
         grid-area: 2 / 1 / 5 / 2;
-        height: 700px;
+        height: 500px;
+        overflow-y: auto;
     }
 
     #player-pool-container {
@@ -166,7 +167,7 @@
         min-width: 250px;
         flex-shrink: 0;
         border-left: solid 1px #ccc;
-        max-height: 700px;
+        max-height: 500px;
         overflow-y: auto;
         margin-top: 0px;
     }
