@@ -1288,8 +1288,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
         const queuedIds = Array.from(select.options).map(opt => opt.value);
         if (queuedIds.length === 0) {
-            alert("No players in queue to submit.");
-            return;
+        console.warn("⚠️ Submitting empty queue.");
         }
 
         const formAction = form.getAttribute('action');
