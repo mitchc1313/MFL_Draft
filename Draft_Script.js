@@ -264,10 +264,12 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         let sortDirection = 1;
 
         function getSortValue(player, key) {
-            if (key === "lastYearScore") return parseFloat(lastYearScores[player.id] || 0);
-            if (key === "fsrank") return parseInt(player.fsrank) || Infinity;
-            return (player[key] || "").toString().toUpperCase();
+        if (key === "lastYearScore") return parseFloat(lastYearScores[player.id] || 0);
+        if (key === "fsrank") return parseInt(player.fsrank) || Infinity;
+        if (key === "adp") return player.adp !== 9999 ? player.adp : Infinity;
+        return (player[key] || "").toString().toUpperCase();
         }
+
 
 
         // console.log("✅ isQueueMode:", isQueueMode);
@@ -426,6 +428,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
       <th class="sortable" data-sort-key="pos">POS</th>
       <th class="sortable" data-sort-key="nfl_team">TEAM</th>
       <th class="sortable" data-sort-key="bye_week">BYE</th>
+      <th class="sortable" data-sort-key="adp">ADP</th>
       <th class="sortable" data-sort-key="lastYearScore">${parseInt(year, 10) - 1} FPTS</th>
       <th class="th-draft">DRAFT/QUEUE</th>
     </tr>
@@ -501,6 +504,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
           <td class="player-position-td">${player.pos}</td>
           <td class="player-team-td">${player.nfl_team}</td>
           <td class="bye-week-td">${player.bye_week}</td>
+          <td class="player-adp">${player.adp !== 9999 ? player.adp.toFixed(1) : "—"}</td>
           <td class="ly-scores-td">${lastYearScores[player.id] ?? "—"}</td>
           <td>
             <button class="draft-btn${isQueued ? ' queued-player' : ''}" data-player-id="${player.id}" type="button">${buttonLabel}</button>
