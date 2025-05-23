@@ -250,7 +250,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         if (typeof window.playerDatabaseObj === 'object' && Array.isArray(window.playerDatabaseObj["picker"]) && window.playerDatabaseObj["picker"].length > 0) {
 
             window.pdb_picker = playerDatabaseObj["picker"];
-            // console.log("✅ Extracted pdb_picker from playerDatabaseObj with", pdb_picker.length, "players");
+            console.log("✅ Extracted pdb_picker from playerDatabaseObj with", pdb_picker.length, "players");
         } else {
             console.error("❌ playerDatabaseObj['picker'] not found or invalid");
             return;
@@ -272,8 +272,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
 
 
-        // console.log("✅ isQueueMode:", isQueueMode);
-        // console.log("✅ destinationList exists:", destinationList !== null);
+        console.log("✅ isQueueMode:", isQueueMode);
+        console.log("✅ destinationList exists:", destinationList !== null);
 
         let queuedPlayerIDs = destinationList
             ? Array.from(destinationList.options).map(opt => opt.value)
@@ -377,10 +377,10 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
         if (newPredraftDiv) {
             newPredraftDiv.appendChild(layoutWrapper);
-            // console.log("📦 Player pool layout added to #new_predraft.");
+            console.log("📦 Player pool layout added to #new_predraft.");
         } else if (pageBody) {
             pageBody.appendChild(layoutWrapper);
-            // console.log("📦 Player pool table appended to #options_52.");
+            console.log("📦 Player pool table appended to #options_52.");
         } else {
             document.body.appendChild(layoutWrapper);
             // Keep this one for visibility if layout goes to an unexpected fallback
@@ -416,7 +416,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         // Then insert the whole wrapped section at the top of the layout
         layoutWrapper.insertBefore(draftBoardWrapper, layoutWrapper.firstChild);
 
-        // console.log("🧱 Draft board container added.");
+        console.log("🧱 Draft board container added.");
 
         const table = document.createElement("table");
         table.className = "player-pool-table";
@@ -635,7 +635,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             messageDiv.textContent = draftTableCaption.textContent;
 
             layoutWrapper.parentNode.insertBefore(messageDiv, layoutWrapper);
-            // console.log("⏰ Draft timer message injected."); // Removed for cleanliness
+            console.log("⏰ Draft timer message injected."); // Removed for cleanliness
         } else {
             console.warn("⚠️ Could not find draft caption or layout container."); // Keep this for fallback awareness
         }
@@ -644,7 +644,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
 
     async function setupRosterView() {
-        // console.log("🧪 setupRosterView() starting...");
+        console.log("🧪 setupRosterView() starting...");
 
         const form = document.querySelector('form[name="new_predraft"]') || document.querySelector('form[action*="/draft"]');
         const layout = document.getElementById("player-pool-layout");
