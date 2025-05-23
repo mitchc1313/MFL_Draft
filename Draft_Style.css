@@ -245,7 +245,8 @@
     .player-position-td,
     .player-team-td,
     .bye-week-td,
-    .ly-scores-td {
+    .ly-scores-td,
+    .player-adp {
         font-size: 9px;
     }
 
