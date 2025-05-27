@@ -1,18 +1,33 @@
 if (document.querySelector("#options_52") || document.querySelector("#new_predraft")) {
 
-    // 🕒 Function to check if draft is paused based on time window
-    function isDraftPausedByTimeWindow(timezoneOffset = -5, startHour = 8, endHour = 23) {
-        const now = new Date();
-        const utcHour = now.getUTCHours();
-        const localHour = (utcHour + timezoneOffset + 24) % 24;
+    // ✅ Get user-defined settings or fallback to defaults
+    const leagueSettings = window.leagueDraftSettings || {};
+    const USER_DEFINED_TIMEZONE_OFFSET = leagueSettings.timezoneOffset ?? -5;
+    const DRAFT_ACTIVE_HOURS_LOCAL = leagueSettings.activeHoursLocal || { start: 9, end: 23 };
 
-        if (startHour < endHour) {
-            return !(localHour >= startHour && localHour < endHour);
-        } else {
-            // Handles wrap-around (e.g., 10pm–4am)
-            return !(localHour >= startHour || localHour < endHour);
-        }
+    // 🔁 Convert local draft hours to UTC
+    function toUtcHour(localHour, offset) {
+        return (localHour - offset + 24) % 24;
     }
+
+    const DRAFT_ACTIVE_HOURS_UTC = {
+        start: toUtcHour(DRAFT_ACTIVE_HOURS_LOCAL.start, USER_DEFINED_TIMEZONE_OFFSET),
+        end: toUtcHour(DRAFT_ACTIVE_HOURS_LOCAL.end, USER_DEFINED_TIMEZONE_OFFSET)
+    };
+
+    function isWithinActiveHoursUTC(hour) {
+        const { start, end } = DRAFT_ACTIVE_HOURS_UTC;
+        return start < end
+            ? hour >= start && hour < end
+            : hour >= start || hour < end;
+    }
+
+    function isDraftPausedByTimeWindow(offset, startHour, endHour) {
+        const now = new Date();
+        const localHour = (now.getUTCHours() + offset + 24) % 24;
+        return !(localHour >= startHour && localHour < endHour);
+    }
+
 
 
     async function pollForDraftUpdates() {
