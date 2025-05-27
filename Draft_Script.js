@@ -1545,6 +1545,14 @@ function updateClock() {
 
     const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
 
+    // 🧪 Logging for debugging
+    console.log("⏰ Current UTC timestamp:", now);
+    console.log("⌛ Draft Start Time:", draftStartTime);
+    console.log("🕓 Last Pick Time:", meta.lastPickTime);
+    console.log("📏 Pick Time Limit (sec):", pickLimitSec);
+    console.log("⏳ UTC Hour:", utcHour);
+    console.log("⏸️ Clock Paused:", clockPaused);
+
     // 🕓 If draft not scheduled
     if (draftStartTime === null) {
         timerDiv.innerHTML = `
@@ -1557,12 +1565,12 @@ function updateClock() {
 
     // ⏳ Draft hasn't started yet
     if (now < draftStartTime) {
+        console.log("🟡 Draft hasn't started yet");
         const fullSec = pickLimitSec;
         const h = Math.floor(fullSec / 3600);
         const m = Math.floor((fullSec % 3600) / 60);
 
         timerDiv.style.color = "#fff";
-
         timerDiv.innerHTML = `
             <div style="font-size: 16px;">Draft Not Started</div>
             <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
@@ -1576,9 +1584,12 @@ function updateClock() {
         return;
     }
 
-    // ✅ Draft has started – calculate remaining time
     const activeSecondsElapsed = getActiveDraftSeconds(meta.lastPickTime, now);
     const remaining = Math.max(0, pickLimitSec - activeSecondsElapsed);
+
+    // 🧪 More logging
+    console.log("⏱️ Active Seconds Elapsed:", activeSecondsElapsed);
+    console.log("🧮 Time Remaining:", remaining);
 
     const h = Math.floor(remaining / 3600);
     const m = Math.floor((remaining % 3600) / 60);
@@ -1617,6 +1628,7 @@ function updateClock() {
     `;
 
     if (remaining <= 0) {
+        console.log("❌ Clock expired — clearing interval");
         clearInterval(interval);
         timerDiv.innerHTML = `
             <div style="font-size: 16px;">${roundInfo}</div>
@@ -1624,6 +1636,7 @@ function updateClock() {
         `;
     }
 }
+
 
 
     
