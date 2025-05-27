@@ -1,5 +1,20 @@
 if (document.querySelector("#options_52") || document.querySelector("#new_predraft")) {
 
+    // 🕒 Function to check if draft is paused based on time window
+    function isDraftPausedByTimeWindow(timezoneOffset = -5, startHour = 8, endHour = 23) {
+        const now = new Date();
+        const utcHour = now.getUTCHours();
+        const localHour = (utcHour + timezoneOffset + 24) % 24;
+
+        if (startHour < endHour) {
+            return !(localHour >= startHour && localHour < endHour);
+        } else {
+            // Handles wrap-around (e.g., 10pm–4am)
+            return !(localHour >= startHour || localHour < endHour);
+        }
+    }
+
+
     async function pollForDraftUpdates() {
         try {
             const xmlDoc = await fetchLiveDraftResultsXML();
@@ -1531,6 +1546,12 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             console.log("⏱️ Time Remaining:", Math.max(0, deadline - now));
             const remaining = Math.max(0, deadline - now);
             const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
+            const { timezoneOffset, activeHoursLocal } = window.leagueDraftSettings || {};
+            const isPaused = isDraftPausedByTimeWindow(
+                timezoneOffset ?? -5,
+                activeHoursLocal?.start ?? 8,
+                activeHoursLocal?.end ?? 23
+            );
             let timeHtml = "";
 
             // 🛑 No draft scheduled
@@ -1544,9 +1565,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 return;
             }
 
-            console.log("🟡 Draft hasn't started yet — showing full time.");
-
             if (lastPickTime === 0 && now < draftStartTime) {
+                console.log("🟡 Draft hasn't started yet — showing full time.");
                 // 🟡 Draft scheduled but not started yet
                 const fullSec = pickLimitSec;
                 const h = Math.floor(fullSec / 3600);
@@ -1567,6 +1587,14 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 return;
             }
 
+            if (isPaused) {
+                timerDiv.innerHTML = `
+        <div style="font-size: 16px;">${roundInfo}</div>
+        <div style="font-size: 24px;">⏸️ Draft is paused</div>
+        <div style="font-size: 12px; margin-top: 4px;">Outside of active draft hours</div>
+    `;
+                return;
+            }
 
             // 🟢 Draft has started
             const h = Math.floor(remaining / 3600);
