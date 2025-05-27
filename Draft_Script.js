@@ -1567,6 +1567,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 activeHoursLocal?.start ?? 8,
                 activeHoursLocal?.end ?? 23
             );
+            console.log("⏸️ Local Hour:", (new Date().getUTCHours() + (timezoneOffset ?? -5) + 24) % 24);
+            console.log("⏸️ isPaused =", isPaused);
             let timeHtml = "";
 
             // 🛑 No draft scheduled
