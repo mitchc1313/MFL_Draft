@@ -1607,7 +1607,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             if (isPaused) {
                 timerDiv.innerHTML = `
         <div style="font-size: 16px;">${roundInfo}</div>
-        <div style="font-size: 24px;">⏸️ Draft is paused</div>
+        <div style="font-size: 24px;">DRAFT PAUSED</div>
         <div style="font-size: 12px; margin-top: 4px;">Outside of active draft hours</div>
     `;
                 return;
