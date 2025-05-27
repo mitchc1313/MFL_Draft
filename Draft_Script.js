@@ -1,5 +1,47 @@
 if (document.querySelector("#options_52") || document.querySelector("#new_predraft")) {
 
+    // ✅ Get user-defined settings or fallback to defaults
+const leagueSettings = window.leagueDraftSettings || {};
+const USER_DEFINED_TIMEZONE_OFFSET = leagueSettings.timezoneOffset ?? -5;
+const DRAFT_ACTIVE_HOURS_LOCAL = leagueSettings.activeHoursLocal || { start: 9, end: 23 };
+
+// 🔁 Convert local draft hours to UTC
+function toUtcHour(localHour, offset) {
+  return (localHour - offset + 24) % 24;
+}
+
+const DRAFT_ACTIVE_HOURS_UTC = {
+  start: toUtcHour(DRAFT_ACTIVE_HOURS_LOCAL.start, USER_DEFINED_TIMEZONE_OFFSET),
+  end: toUtcHour(DRAFT_ACTIVE_HOURS_LOCAL.end, USER_DEFINED_TIMEZONE_OFFSET)
+};
+
+function isWithinActiveHoursUTC(hour) {
+  const { start, end } = DRAFT_ACTIVE_HOURS_UTC;
+  return start < end
+    ? hour >= start && hour < end
+    : hour >= start || hour < end;
+}
+
+    function getActiveDraftSeconds(startUnix, endUnix) {
+    let total = 0;
+    const start = new Date(startUnix * 1000);
+    const end = new Date(endUnix * 1000);
+    const current = new Date(start);
+
+    while (current < end) {
+        const utcHour = current.getUTCHours();
+
+        if (isWithinActiveHoursUTC(utcHour)) {
+            total += 60; // count this minute
+        }
+        current.setMinutes(current.getMinutes() + 1);
+    }
+
+    return total; // total seconds
+}
+
+
+
     async function pollForDraftUpdates() {
         try {
             const xmlDoc = await fetchLiveDraftResultsXML();
@@ -1497,25 +1539,64 @@ async function initLiveDraftClock() {
 
     let interval;
 
-    function updateClock(deadline) {
-        const now = Math.floor(Date.now() / 1000);
-        const remaining = Math.max(0, deadline - now);
-        const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
-        let timeHtml = "";
+    function updateClock() {
+    const now = Math.floor(Date.now() / 1000);
+    const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
+    let timeHtml = "";
 
-        // 🛑 No draft scheduled
-  if (draftStartTime === null) {
-    // 🛑 Draft start time not found at all
-    timerDiv.innerHTML = `
-        <div style="font-size: 16px;">Draft not scheduled</div>
-        <div style="font-size: 24px;">Waiting...</div>
+    if (now < draftStartTime) {
+        const fullSec = pickLimitSec;
+        const h = Math.floor(fullSec / 3600);
+        const m = Math.floor((fullSec % 3600) / 60);
+
+        timeHtml = `
+            <div style="font-size: 16px;">${roundInfo}</div>
+            <div style="font-size: 24px;">Draft has not started yet</div>
+            <div style="font-size: 20px;">Time limit per pick: ${h}h ${m}m</div>
+        `;
+
+        timerDiv.innerHTML = timeHtml;
+        return;
+    }
+
+    // Proceed with normal timer countdown...
+    const activeSecondsElapsed = getActiveDraftSeconds(meta.lastPickTime, now);
+    const remaining = Math.max(0, pickLimitSec - activeSecondsElapsed);
+
+    const h = Math.floor(remaining / 3600);
+    const m = Math.floor((remaining % 3600) / 60);
+    const s = remaining % 60;
+
+    const padded = (n) => String(n).padStart(2, "0");
+
+    if (remaining <= 0) {
+        timerDiv.innerHTML = `
+            <div style="font-size: 16px;">${roundInfo}</div>
+            <div style="font-size: 24px;">EXPIRED</div>
+        `;
+        clearInterval(interval);
+        return;
+    }
+
+    timeHtml = `
+        <div style="font-size: 16px;">${roundInfo}</div>
+        <div style="font-size: 50px; font-weight: 900;">
+            ${padded(h)}:${padded(m)}:${padded(s)}
+        </div>
     `;
-    clearInterval(interval);
-    return;
+
+    if (remaining <= 300) {
+        timerDiv.style.color = "#ff4444";
+    } else {
+        timerDiv.style.color = "#ffffff";
+    }
+
+    timerDiv.innerHTML = timeHtml;
 }
 
+
 if (now < draftStartTime) {
-    // 🟡 Draft scheduled but not started yet
+    // ðŸŸ¡ Draft scheduled but not started yet
     const fullSec = pickLimitSec;
     const h = Math.floor(fullSec / 3600);
     const m = Math.floor((fullSec % 3600) / 60);
@@ -1523,26 +1604,22 @@ if (now < draftStartTime) {
     timerDiv.style.color = "#fff"; // reset color
 
     timerDiv.innerHTML = `
-        <div style="font-size: 16px;">Draft Not Started</div>
-        <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
-            ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
-        </div>
-        <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
-            <div style="width: 40px; text-align: center;">Hours</div>
-            <div style="width: 40px; text-align: center;">Minutes</div>
-        </div>
-    `;
+    <div style="font-size: 16px;">${roundInfo}</div>
+    ${timeHtml}
+    ${clockPaused ? '<div style="font-size: 16px; color: #ffa500;">⏸️ PAUSED</div>' : ''}
+`;
+
     return;
 }
 
 
-        // 🟢 Draft has started
+        // ðŸŸ¢ Draft has started
         const h = Math.floor(remaining / 3600);
         const m = Math.floor((remaining % 3600) / 60);
         const s = remaining % 60;
 
         if (remaining <= 10) {
-            timerDiv.style.color = "#ff4d4f"; // 🔴 flash red near expiration
+            timerDiv.style.color = "#ff4d4f"; // ðŸ”´ flash red near expiration
         } else {
             timerDiv.style.color = "#fff";
         }
