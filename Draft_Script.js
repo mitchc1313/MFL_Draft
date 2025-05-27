@@ -1,46 +1,5 @@
 if (document.querySelector("#options_52") || document.querySelector("#new_predraft")) {
 
-        // ✅ Get user-defined settings or fallback to defaults
-    const leagueSettings = window.leagueDraftSettings || {};
-    const USER_DEFINED_TIMEZONE_OFFSET = leagueSettings.timezoneOffset ?? -5;
-    const DRAFT_ACTIVE_HOURS_LOCAL = leagueSettings.activeHoursLocal || { start: 9, end: 23 };
-
-    // 🔁 Convert local draft hours to UTC
-    function toUtcHour(localHour, offset) {
-    return (localHour - offset + 24) % 24;
-    }
-
-    const DRAFT_ACTIVE_HOURS_UTC = {
-    start: toUtcHour(DRAFT_ACTIVE_HOURS_LOCAL.start, USER_DEFINED_TIMEZONE_OFFSET),
-    end: toUtcHour(DRAFT_ACTIVE_HOURS_LOCAL.end, USER_DEFINED_TIMEZONE_OFFSET)
-    };
-
-    function isWithinActiveHoursUTC(hour) {
-    const { start, end } = DRAFT_ACTIVE_HOURS_UTC;
-    return start < end
-        ? hour >= start && hour < end
-        : hour >= start || hour < end;
-    }
-
-    function getActiveDraftSeconds(startUnix, endUnix) {
-    let total = 0;
-    const start = new Date(startUnix * 1000);
-    const end = new Date(endUnix * 1000);
-    const current = new Date(start);
-
-    while (current < end) {
-        const utcHour = current.getUTCHours();
-        if (isWithinActiveHoursUTC(utcHour)) {
-            total += 60; // count this minute
-        }
-        current.setMinutes(current.getMinutes() + 1);
-    }
-
-    return total; // total seconds
-}
-
-
-
     async function pollForDraftUpdates() {
         try {
             const xmlDoc = await fetchLiveDraftResultsXML();
@@ -50,15 +9,15 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const currentPickCount = picks.length;
 
             if (currentPickCount > lastSeenDraftPickCount) {
-                console.log(`ðŸŸ¢ New draft pick detected! (${currentPickCount} vs ${lastSeenDraftPickCount})`);
+                console.log(`🟢 New draft pick detected! (${currentPickCount} vs ${lastSeenDraftPickCount})`);
                 lastSeenDraftPickCount = currentPickCount;
 
                 setupRosterView(); // Full re-render
             } else {
-                console.log("â³ No new picks yet...");
+                console.log("⏳ No new picks yet...");
             }
         } catch (err) {
-            console.error("âŒ Error in polling draft picks:", err);
+            console.error("❌ Error in polling draft picks:", err);
         }
     }
 
@@ -108,7 +67,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         if (pageBody) {
             pageBody.appendChild(nav);
         } else {
-            console.warn("âš ï¸ .pagebody not found. Appending to document.body as fallback.");
+            console.warn("⚠️ .pagebody not found. Appending to document.body as fallback.");
             document.body.appendChild(nav);
         }
 
@@ -133,104 +92,104 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
 
     async function fetchLastYearFantasyPoints(providedLeagueId = null) {
-    const leagueIdToUse = (providedLeagueId && !isNaN(providedLeagueId))
-        ? providedLeagueId
-        : (window.customLeagueId && !isNaN(window.customLeagueId))
-            ? window.customLeagueId
-            : leagueId;
+        const leagueIdToUse = (providedLeagueId && !isNaN(providedLeagueId))
+            ? providedLeagueId
+            : (window.customLeagueId && !isNaN(window.customLeagueId))
+                ? window.customLeagueId
+                : leagueId;
 
-    if (!leagueIdToUse || !baseURLDynamic || !year) {
-        console.error("âŒ Missing required global variables: leagueId, year, or baseURLDynamic.");
-        return {};
+        if (!leagueIdToUse || !baseURLDynamic || !year) {
+            console.error("❌ Missing required global variables: leagueId, year, or baseURLDynamic.");
+            return {};
+        }
+
+        const prevYear = parseInt(year, 10) - 1;
+        const apiURL = `${baseURLDynamic}/${prevYear}/export?TYPE=playerScores&L=${leagueIdToUse}&W=YTD&YEAR=${prevYear}&JSON=1`;
+
+        try {
+            const res = await fetch(apiURL);
+            const data = await res.json();
+
+            console.log("📦 playerScores API raw data:", data); // <-- NEW
+            const scoresArray = data?.playerScores?.playerScore || [];
+
+            console.log(`📋 playerScores array (${scoresArray.length} players):`, scoresArray); // <-- NEW
+
+            const scoresMap = {};
+            scoresArray.forEach(player => {
+                scoresMap[player.id] = player.score;
+            });
+
+            return scoresMap;
+        } catch (err) {
+            console.error("❌ Failed to fetch last year's scores:", err);
+            return {};
+        }
     }
 
-    const prevYear = parseInt(year, 10) - 1;
-    const apiURL = `${baseURLDynamic}/${prevYear}/export?TYPE=playerScores&L=${leagueIdToUse}&W=YTD&YEAR=${prevYear}&JSON=1`;
+    async function fetchTeamInfo(providedLeagueId = null) {
+        const leagueId = providedLeagueId || window.league_id;
 
-    try {
-        const res = await fetch(apiURL);
-        const data = await res.json();
+        if (!leagueId) {
+            console.error("❌ window.league_id is not defined.");
+            return {};
+        }
 
-        console.log("ðŸ“¦ playerScores API raw data:", data); // <-- NEW
-        const scoresArray = data?.playerScores?.playerScore || [];
+        const url = `${baseURLDynamic}/2025/export?TYPE=league&L=${leagueId}&JSON=1`;
 
-        console.log(`ðŸ“‹ playerScores array (${scoresArray.length} players):`, scoresArray); // <-- NEW
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
 
-        const scoresMap = {};
-        scoresArray.forEach(player => {
-            scoresMap[player.id] = player.score;
-        });
+            console.log("📦 league API raw data:", data);
+            const teams = data?.league?.franchises?.franchise || [];
 
-        return scoresMap;
-    } catch (err) {
-        console.error("âŒ Failed to fetch last year's scores:", err);
-        return {};
+            console.log(`📋 franchise array (${teams.length} teams):`, teams);
+
+            const teamMap = {};
+            teams.forEach(team => {
+                teamMap[team.id] = {
+                    name: team.name
+                };
+            });
+
+            console.log("🗺️ Mapped team IDs to names:", teamMap);
+
+            return teamMap;
+        } catch (err) {
+            console.error("❌ Failed to fetch team info:", err);
+            return {};
+        }
     }
-}
-
-   async function fetchTeamInfo(providedLeagueId = null) {
-    const leagueId = providedLeagueId || window.league_id;
-
-    if (!leagueId) {
-        console.error("âŒ window.league_id is not defined.");
-        return {};
-    }
-
-    const url = `${baseURLDynamic}/2025/export?TYPE=league&L=${leagueId}&JSON=1`;
-
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        console.log("ðŸ“¦ league API raw data:", data);
-        const teams = data?.league?.franchises?.franchise || [];
-
-        console.log(`ðŸ“‹ franchise array (${teams.length} teams):`, teams);
-
-        const teamMap = {};
-        teams.forEach(team => {
-            teamMap[team.id] = {
-                name: team.name
-            };
-        });
-
-        console.log("ðŸ—ºï¸ Mapped team IDs to names:", teamMap);
-
-        return teamMap;
-    } catch (err) {
-        console.error("âŒ Failed to fetch team info:", err);
-        return {};
-    }
-}
 
 
 
 
     async function fetchNFLByeWeeks(year) {
-    const url = `https://api.myfantasyleague.com/${year}/export?TYPE=nflByeWeeks&W=&JSON=1`;
+        const url = `https://api.myfantasyleague.com/${year}/export?TYPE=nflByeWeeks&W=&JSON=1`;
 
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
 
-        console.log("ðŸ“¦ nflByeWeeks API raw data:", data); // <-- NEW
-        const teamArray = data?.nflByeWeeks?.team || [];
+            console.log("📦 nflByeWeeks API raw data:", data); // <-- NEW
+            const teamArray = data?.nflByeWeeks?.team || [];
 
-        console.log(`ðŸ“‹ nflByeWeeks array (${teamArray.length} teams):`, teamArray); // <-- NEW
+            console.log(`📋 nflByeWeeks array (${teamArray.length} teams):`, teamArray); // <-- NEW
 
-        const byeWeekMap = {};
-        teamArray.forEach(team => {
-            byeWeekMap[team.id] = team.bye_week || "â€”";
-        });
+            const byeWeekMap = {};
+            teamArray.forEach(team => {
+                byeWeekMap[team.id] = team.bye_week || "—";
+            });
 
-        console.log("ðŸ—ºï¸ Mapped team bye weeks:", byeWeekMap); // <-- NEW
+            console.log("🗺️ Mapped team bye weeks:", byeWeekMap); // <-- NEW
 
-        return byeWeekMap;
-    } catch (err) {
-        console.error("âŒ Failed to fetch bye week data:", err);
-        return {};
+            return byeWeekMap;
+        } catch (err) {
+            console.error("❌ Failed to fetch bye week data:", err);
+            return {};
+        }
     }
-}
 
     function getPickTimeLimitInSeconds() {
         const { value, unit } = window.pickTimeLimit || { value: 4, unit: "hours" };
@@ -257,7 +216,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const xmlDoc = parser.parseFromString(text, "text/xml");
             return xmlDoc;
         } catch (err) {
-            console.error("âŒ Failed to fetch or parse draft results XML:", err);
+            console.error("❌ Failed to fetch or parse draft results XML:", err);
             return null;
         }
     }
@@ -291,9 +250,9 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         if (typeof window.playerDatabaseObj === 'object' && Array.isArray(window.playerDatabaseObj["picker"]) && window.playerDatabaseObj["picker"].length > 0) {
 
             window.pdb_picker = playerDatabaseObj["picker"];
-            console.log("âœ… Extracted pdb_picker from playerDatabaseObj with", pdb_picker.length, "players");
+            console.log("✅ Extracted pdb_picker from playerDatabaseObj with", pdb_picker.length, "players");
         } else {
-            console.error("âŒ playerDatabaseObj['picker'] not found or invalid");
+            console.error("❌ playerDatabaseObj['picker'] not found or invalid");
             return;
         }
 
@@ -305,16 +264,16 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         let sortDirection = 1;
 
         function getSortValue(player, key) {
-        if (key === "lastYearScore") return parseFloat(lastYearScores[player.id] || 0);
-        if (key === "fsrank") return parseInt(player.fsrank) || Infinity;
-        if (key === "adp") return player.adp !== 9999 ? player.adp : Infinity;
-        return (player[key] || "").toString().toUpperCase();
+            if (key === "lastYearScore") return parseFloat(lastYearScores[player.id] || 0);
+            if (key === "fsrank") return parseInt(player.fsrank) || Infinity;
+            if (key === "adp") return player.adp !== 9999 ? player.adp : Infinity;
+            return (player[key] || "").toString().toUpperCase();
         }
 
 
 
-        console.log("âœ… isQueueMode:", isQueueMode);
-        console.log("âœ… destinationList exists:", destinationList !== null);
+        console.log("✅ isQueueMode:", isQueueMode);
+        console.log("✅ destinationList exists:", destinationList !== null);
 
         let queuedPlayerIDs = destinationList
             ? Array.from(destinationList.options).map(opt => opt.value)
@@ -342,7 +301,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         container.id = "player-pool-container";
         container.className = "draft-view";
 
-        // ðŸ”½ Add h3 header
+        // 🔽 Add h3 header
         const poolHeader = document.createElement("h3");
         poolHeader.textContent = "Player Pool";
         poolHeader.style.margin = "0 0 0 0";
@@ -406,11 +365,11 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         headerDiv.appendChild(roundWrapper);
 
 
-        container.appendChild(headerDiv); // âœ… Add header to player pool container
-        layoutWrapper.appendChild(container); // âœ… Add player pool to center
+        container.appendChild(headerDiv); // ✅ Add header to player pool container
+        layoutWrapper.appendChild(container); // ✅ Add player pool to center
 
         if (showQueueSidebar) {
-            layoutWrapper.appendChild(queueSidebar); // âœ… Add queue to the right
+            layoutWrapper.appendChild(queueSidebar); // ✅ Add queue to the right
         }
 
         const newPredraftDiv = document.querySelector('#new_predraft');
@@ -418,20 +377,20 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
         if (newPredraftDiv) {
             newPredraftDiv.appendChild(layoutWrapper);
-            console.log("ðŸ“¦ Player pool layout added to #new_predraft.");
+            console.log("📦 Player pool layout added to #new_predraft.");
         } else if (pageBody) {
             pageBody.appendChild(layoutWrapper);
-            console.log("ðŸ“¦ Player pool table appended to #options_52.");
+            console.log("📦 Player pool table appended to #options_52.");
         } else {
             document.body.appendChild(layoutWrapper);
             // Keep this one for visibility if layout goes to an unexpected fallback
-            console.warn("âš ï¸ Fallback: Appended player pool to body.");
+            console.warn("⚠️ Fallback: Appended player pool to body.");
         }
 
-        // âœ… Always run setupRosterView regardless of isQueueMode
+        // ✅ Always run setupRosterView regardless of isQueueMode
         setupRosterView();
 
-        // ðŸ§± STEP 1: Add draft board container
+        // 🧱 STEP 1: Add draft board container
         const draftBoardContainer = document.createElement("div");
         draftBoardContainer.id = "draftBoard";
         draftBoardContainer.style.overflowX = "auto";
@@ -444,7 +403,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         draftBoardContainer.style.display = "flex";
         draftBoardContainer.style.gap = "8px";
         draftBoardContainer.style.paddingTop = "12px"; // keep top padding
-        // ðŸ§± Create a wrapper for the draft board to allow scaling without breaking layout
+        // 🧱 Create a wrapper for the draft board to allow scaling without breaking layout
         const draftBoardWrapper = document.createElement("div");
         draftBoardWrapper.id = "draftBoard-wrapper";
         draftBoardWrapper.style.overflowX = "auto";
@@ -457,7 +416,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         // Then insert the whole wrapped section at the top of the layout
         layoutWrapper.insertBefore(draftBoardWrapper, layoutWrapper.firstChild);
 
-        console.log("ðŸ§± Draft board container added.");
+        console.log("🧱 Draft board container added.");
 
         const table = document.createElement("table");
         table.className = "player-pool-table";
@@ -545,8 +504,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
           <td class="player-position-td">${player.pos}</td>
           <td class="player-team-td">${player.nfl_team}</td>
           <td class="bye-week-td">${player.bye_week}</td>
-          <td class="player-adp">${player.adp !== 9999 ? player.adp.toFixed(1) : "â€”"}</td>
-          <td class="ly-scores-td">${lastYearScores[player.id] ?? "â€”"}</td>
+          <td class="player-adp">${player.adp !== 9999 ? player.adp.toFixed(1) : "—"}</td>
+          <td class="ly-scores-td">${lastYearScores[player.id] ?? "—"}</td>
           <td>
             <button class="draft-btn${isQueued ? ' queued-player' : ''}" data-player-id="${player.id}" type="button">${buttonLabel}</button>
           </td>
@@ -555,7 +514,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 tbody.appendChild(tr);
             });
 
-            attachDraftButtonListeners(); // âœ… cleaner re-attachment
+            attachDraftButtonListeners(); // ✅ cleaner re-attachment
         }
 
 
@@ -591,7 +550,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                         if (playerId) {
                             draftPlayer(playerId);
                         } else {
-                            console.warn("âš ï¸ No playerId found on button.");
+                            console.warn("⚠️ No playerId found on button.");
                         }
                     }
                 });
@@ -676,26 +635,26 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             messageDiv.textContent = draftTableCaption.textContent;
 
             layoutWrapper.parentNode.insertBefore(messageDiv, layoutWrapper);
-            console.log("â° Draft timer message injected."); // Removed for cleanliness
+            console.log("⏰ Draft timer message injected."); // Removed for cleanliness
         } else {
-            console.warn("âš ï¸ Could not find draft caption or layout container."); // Keep this for fallback awareness
+            console.warn("⚠️ Could not find draft caption or layout container."); // Keep this for fallback awareness
         }
     }
 
 
 
     async function setupRosterView() {
-        console.log("ðŸ§ª setupRosterView() starting...");
+        console.log("🧪 setupRosterView() starting...");
 
         const form = document.querySelector('form[name="new_predraft"]') || document.querySelector('form[action*="/draft"]');
         const layout = document.getElementById("player-pool-layout");
 
         if (!form) {
-            console.error("âŒ Could not find predraft form.");
+            console.error("❌ Could not find predraft form.");
         }
 
         if (!layout) {
-            console.error("âŒ Could not find #player-pool-layout. Is buildPlayerPoolTable() done?");
+            console.error("❌ Could not find #player-pool-layout. Is buildPlayerPoolTable() done?");
         }
 
         if (!form || !layout) return;
@@ -705,7 +664,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const maxRounds = window.maxRoundsFallback || 16;
 
         if (!leagueId || !franchiseId) {
-            console.error("âŒ Missing LEAGUE_ID or FRANCHISE_ID.");
+            console.error("❌ Missing LEAGUE_ID or FRANCHISE_ID.");
             return;
         }
 
@@ -721,8 +680,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const totalStarters = Object.values(startersConfig).reduce((sum, val) => sum + val, 0);
         const numFlex = maxRounds - totalStarters;
 
-        // console.log("ðŸ“Œ Starters config:", startersConfig);
-        // console.log("ðŸ“Œ Total FLEX spots:", numFlex);
+        // console.log("📌 Starters config:", startersConfig);
+        // console.log("📌 Total FLEX spots:", numFlex);
 
         const rosterDiv = document.createElement("div");
         rosterDiv.id = "team-roster-view";
@@ -763,9 +722,9 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             window.startersConfig = startersConfig;
             window.flexSpots = numFlex;
 
-            renderRoster(); // âœ… CALL IT HERE
+            renderRoster(); // ✅ CALL IT HERE
 
-            // âœ… Draft board rendering
+            // ✅ Draft board rendering
             if (window.draftedPlayerDetails && Array.isArray(window.draftedPlayerIDs)) {
                 const draftBoardEl = document.getElementById("draftBoard");
                 const franchiseNameMap = window.teamInfo || {};
@@ -822,7 +781,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                     pickDiv.style.overflow = 'hidden';
 
 
-                    // ðŸ” Top-right team icon
+                    // 🔁 Top-right team icon
                     const teamIconWrapper = document.createElement('div');
                     teamIconWrapper.className = 'team-icon-wrapper';
                     teamIconWrapper.style.position = 'absolute';
@@ -835,7 +794,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                     teamIconWrapper.style.borderRadius = '50%';
                     teamIconWrapper.style.zIndex = '1'; // above background logo
 
-                    // ðŸ” Large faint background team logo
+                    // 🔁 Large faint background team logo
                     const teamLogoImg = document.createElement("img");
                     teamLogoImg.className = "team-logo-bg";
                     teamLogoImg.src = getComputedStyle(document.documentElement)
@@ -907,7 +866,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
                             pickDiv.style.color = "#fff"; // white text for current pick
 
-                            // ðŸŒˆ Apply team color only for current pick
+                            // 🌈 Apply team color only for current pick
                             const teamClass = `team_${franchiseId}`;
                             const teamId = franchiseId;
                             const cssVar = `--team_${teamId}`;
@@ -918,7 +877,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                                 const lightFade = hexToRgba(baseColor, 0.8);
                                 pickDiv.style.background = `linear-gradient(to top, ${darkColor}, ${lightFade})`;
 
-                                // âœ… Setup animation style sheet once globally
+                                // ✅ Setup animation style sheet once globally
                                 if (!window.dynamicAnimationStyleEl) {
                                     const styleEl = document.createElement("style");
                                     styleEl.id = "dynamic-animations";
@@ -926,7 +885,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                                     window.dynamicAnimationStyleEl = styleEl.sheet;
                                 }
 
-                                // âœ… Inject keyframes for this specific team if not already added
+                                // ✅ Inject keyframes for this specific team if not already added
                                 const animationName = `pulseGlow_${franchiseId}`;
                                 const existingRule = Array.from(window.dynamicAnimationStyleEl.cssRules).find(rule =>
                                     rule.name === animationName
@@ -941,14 +900,14 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         }`;
                                     try {
                                         window.dynamicAnimationStyleEl.insertRule(keyframes, window.dynamicAnimationStyleEl.cssRules.length);
-                                        // console.log(`âœ… Injected keyframes for ${animationName}`); // Removed for production
+                                        // console.log(`✅ Injected keyframes for ${animationName}`); // Removed for production
                                     } catch (err) {
-                                        console.error(`âŒ Failed to inject keyframes for ${animationName}:`, err);
+                                        console.error(`❌ Failed to inject keyframes for ${animationName}:`, err);
                                     }
                                 }
 
 
-                                // âœ… Set CSS variable to trigger the animation
+                                // ✅ Set CSS variable to trigger the animation
                                 pickDiv.style.setProperty('--pulse-anim', animationName);
                             }
                         }
@@ -968,50 +927,50 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
                 });
 
-    if (currentPickEl) {
-    const container = document.getElementById("draftBoard-wrapper");
-    let offset = window.innerWidth <= 900 ? 208 : 116; // Default offsets
+                if (currentPickEl) {
+                    const container = document.getElementById("draftBoard-wrapper");
+                    let offset = window.innerWidth <= 900 ? 208 : 116; // Default offsets
 
-    const allDraftPicks = Array.from(container.querySelectorAll(".draft-pick, .round-divider"));
-    const currentIndex = allDraftPicks.indexOf(currentPickEl);
+                    const allDraftPicks = Array.from(container.querySelectorAll(".draft-pick, .round-divider"));
+                    const currentIndex = allDraftPicks.indexOf(currentPickEl);
 
-    if (currentIndex > -1 && currentIndex <= 3) {
-        offset = 500; // No offset for picks 0-3
-    }
+                    if (currentIndex > -1 && currentIndex <= 3) {
+                        offset = 500; // No offset for picks 0-3
+                    }
 
-    setTimeout(() => {
-        const elRect = currentPickEl.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const scrollLeft = container.scrollLeft;
-        const targetScroll = scrollLeft + (elRect.left - containerRect.left) - offset;
+                    setTimeout(() => {
+                        const elRect = currentPickEl.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
+                        const scrollLeft = container.scrollLeft;
+                        const targetScroll = scrollLeft + (elRect.left - containerRect.left) - offset;
 
-        container.scrollTo({
-            left: targetScroll,
-            behavior: "smooth"
-        });
-        console.log("ðŸ“Œ Scrolled to current pick (index", currentIndex, ") with offset:", offset);
-    }, 50);
-}
+                        container.scrollTo({
+                            left: targetScroll,
+                            behavior: "smooth"
+                        });
+                        console.log("📌 Scrolled to current pick (index", currentIndex, ") with offset:", offset);
+                    }, 50);
+                }
 
-                console.log("âœ… Draft board populated.");
+                console.log("✅ Draft board populated.");
             }
 
 
         } catch (err) {
-            console.error("âŒ Failed to fetch draft results:", err);
+            console.error("❌ Failed to fetch draft results:", err);
         }
     }
 
     function renderRoster() {
         if (!window.draftedPlayerIDs || !Array.isArray(window.draftedPlayerIDs)) {
-            console.warn("âš ï¸ No drafted player IDs found.");
+            console.warn("⚠️ No drafted player IDs found.");
             return;
         }
 
         const startersEl = document.getElementById("roster-starters");
         const flexEl = document.getElementById("roster-flex");
         if (!startersEl || !flexEl) {
-            console.warn("âš ï¸ Could not find #roster-starters or #roster-flex.");
+            console.warn("⚠️ Could not find #roster-starters or #roster-flex.");
             return;
         }
 
@@ -1019,7 +978,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         startersEl.innerHTML = "<h4>Starters</h4>";
         flexEl.innerHTML = "<h4>Bench</h4>";
 
-        // âœ… Insert header row BEFORE the #roster-starters div
+        // ✅ Insert header row BEFORE the #roster-starters div
         const headerRow = document.createElement("div");
         headerRow.className = "roster-line header";
         headerRow.innerHTML = `
@@ -1041,7 +1000,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         window.draftedPlayerIDs.forEach(pid => {
             const player = window.draftedPlayerDetails?.[pid];
             if (!player) {
-                console.warn(`âŒ No player details found for ID: ${pid}`);
+                console.warn(`❌ No player details found for ID: ${pid}`);
                 return;
             }
 
@@ -1049,11 +1008,11 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const [last, first] = player.name.split(", ");
             const fullName = `${first || ""} ${last || ""}`.trim();
 
-            // console.log(`ðŸ§© Player ${fullName} (${pid}) - Team: ${player.team}`); // Removed for cleaner output
+            // console.log(`🧩 Player ${fullName} (${pid}) - Team: ${player.team}`); // Removed for cleaner output
 
             const byeWeek = window.byeWeeksMap?.[player.team];
             if (!byeWeek) {
-                console.warn(`â“ No bye week found for team ${player.team}`);
+                console.warn(`❓ No bye week found for team ${player.team}`);
             }
 
             if (!starterSlots[pos]) starterSlots[pos] = [];
@@ -1063,7 +1022,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 fullName,
                 pos,
                 team: player.team,
-                byeWeek: byeWeek || "â€”"
+                byeWeek: byeWeek || "—"
             };
 
             if (starterSlots[pos].length < maxSlots) {
@@ -1080,7 +1039,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const filled = starterSlots[pos] || [];
 
             for (let i = 0; i < max; i++) {
-                const player = filled[i] || { fullName: "Empty", byeWeek: "â€”" };
+                const player = filled[i] || { fullName: "Empty", byeWeek: "—" };
 
                 const wrapper = document.createElement("div");
                 wrapper.className = "roster-line";
@@ -1108,7 +1067,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
         // Render FLEX bench spots
         for (let i = 0; i < window.flexSpots; i++) {
-            const player = flexPlayers[i] || { fullName: "Empty", byeWeek: "â€”" };
+            const player = flexPlayers[i] || { fullName: "Empty", byeWeek: "—" };
 
             const wrapper = document.createElement("div");
             wrapper.className = "roster-line";
@@ -1162,7 +1121,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             });
             return playerMap;
         } catch (err) {
-            console.error("âŒ Failed to fetch player details:", err);
+            console.error("❌ Failed to fetch player details:", err);
             return {};
         }
     }
@@ -1189,7 +1148,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             ? Array.from(destinationList.options).map(opt => opt.value)
             : [];
 
-        // âž¡ï¸ Introduce a new counter for rendered players
+        // ➡️ Introduce a new counter for rendered players
         let renderedPlayerIndex = 0;
 
         queuedPlayerIDs.forEach((id) => {
@@ -1207,11 +1166,11 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const item = document.createElement("div");
             item.classList.add("queue-player-item");
 
-            // âœ… Use renderedPlayerIndex instead of original index
+            // ✅ Use renderedPlayerIndex instead of original index
             const rowClass = renderedPlayerIndex % 2 === 0 ? "eventablerow-draft" : "oddtablerow-draft";
             item.classList.add(rowClass);
 
-            const playerRank = player.fsrank || "â€”";
+            const playerRank = player.fsrank || "—";
 
             item.innerHTML = `
             <div class="queue-grid">
@@ -1233,13 +1192,13 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
             queueList.appendChild(item);
 
-            // âœ… Increment only after successful render
+            // ✅ Increment only after successful render
             renderedPlayerIndex++;
         });
     }
 
 
-    // âž• The renumberQueue function definition:
+    // ➕ The renumberQueue function definition:
     function renumberQueue() {
         const queueItems = document.querySelectorAll('#queue-list .queue-player-item .queue-num');
         queueItems.forEach((item, index) => {
@@ -1250,11 +1209,11 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
 
     function draftPlayer(playerId) {
-        console.log("ðŸ§¨ draftPlayer() called with:", playerId);
+        console.log("🧨 draftPlayer() called with:", playerId);
 
         const formOnPage = document.querySelector('form[action*="/draft"]');
         if (!formOnPage) {
-            console.error("âŒ Draft form not found on the page.");
+            console.error("❌ Draft form not found on the page.");
             return;
         }
 
@@ -1262,27 +1221,27 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const franchiseId = formOnPage.querySelector('input[name="FRANCHISE_ID"]')?.value;
         const option = formOnPage.querySelector('input[name="OPTION"]')?.value;
 
-        console.log("ðŸ“‹ Fetched hidden form values:", { leagueId, franchiseId, option });
+        console.log("📋 Fetched hidden form values:", { leagueId, franchiseId, option });
 
         if (!leagueId || !franchiseId || !option) {
-            console.error("âŒ One or more hidden input values are missing.");
+            console.error("❌ One or more hidden input values are missing.");
             return;
         }
 
 
-        // âœ… Get player name for confirmation message
+        // ✅ Get player name for confirmation message
         const player = pdb_picker.find(p => String(p.id) === String(playerId));
         const [last, first] = player?.name?.split(", ") || ["", ""];
         const fullName = `${first || ""} ${last || ""}`.trim();
 
-        // ðŸ›‘ Confirm submission
+        // 🛑 Confirm submission
         const confirmMsg = `Are you sure you want to draft ${fullName}? This action cannot be undone.`;
         if (!window.confirm(confirmMsg)) {
-            console.log("â›” Draft cancelled by user.");
+            console.log("⛔ Draft cancelled by user.");
             return;
         }
 
-        console.log("ðŸ§ª Preparing to DRAFT Player:");
+        console.log("🧪 Preparing to DRAFT Player:");
         console.table({
             LEAGUE_ID: leagueId,
             FRANCHISE_ID: franchiseId,
@@ -1309,16 +1268,16 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         addField("PLAYER_PICK", playerId);
         addField("MSG", "");
 
-        console.log("ðŸ“¦ Draft form action URL:", draftForm.action);
-        console.log("ðŸ“¤ Form data (serialized):");
+        console.log("📦 Draft form action URL:", draftForm.action);
+        console.log("📤 Form data (serialized):");
         Array.from(draftForm.elements).forEach(input => {
             console.log(`  ${input.name}: ${input.value}`);
         });
 
         document.body.appendChild(draftForm);
-        console.log("ðŸ“ Form appended to body. Submitting now...");
+        console.log("📝 Form appended to body. Submitting now...");
         draftForm.submit();
-        console.log("âœ… draftForm.submit() should be complete.");
+        console.log("✅ draftForm.submit() should be complete.");
     }
 
 
@@ -1327,13 +1286,13 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const select = document.querySelector('#destination_list');
 
         if (!form || !select) {
-            console.error("âŒ Could not find predraft form or destination list.");
+            console.error("❌ Could not find predraft form or destination list.");
             return;
         }
 
         const queuedIds = Array.from(select.options).map(opt => opt.value);
         if (queuedIds.length === 0) {
-        console.warn("âš ï¸ Submitting empty queue.");
+            console.warn("⚠️ Submitting empty queue.");
         }
 
         const formAction = form.getAttribute('action');
@@ -1344,7 +1303,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         urlParams.set("continue", "Save These Picks And Continue");
 
         const finalUrl = `${formAction}?${urlParams.toString()}`;
-        console.log("ðŸ“¤ Submitting queue to:", finalUrl);
+        console.log("📤 Submitting queue to:", finalUrl);
 
         // Create and submit form
         const dynamicForm = document.createElement("form");
@@ -1477,50 +1436,59 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     }
 
 
-  async function fetchDraftStartTime() {
-    try {
-        const url = `${baseURLDynamic}/${year}/export?TYPE=calendar&L=${league_id}&JSON=0`;
-        const response = await fetch(url);
-        const text = await response.text();
+    async function fetchDraftStartTime() {
+        try {
+            const url = `${baseURLDynamic}/${year}/export?TYPE=calendar&L=${league_id}&JSON=0`;
+            const response = await fetch(url);
+            const text = await response.text();
 
 
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(text, "text/xml");
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(text, "text/xml");
 
-        const events = xmlDoc.getElementsByTagName('event');
-        for (let event of events) {
-            const type = event.getAttribute('type');
-            const rawStart = event.getAttribute('start_time');
-            if (type === "DRAFT_START") {
-                const startTime = parseInt(rawStart, 10);
-                return startTime;
+            const events = xmlDoc.getElementsByTagName('event');
+            for (let event of events) {
+                const type = event.getAttribute('type');
+                const rawStart = event.getAttribute('start_time');
+                if (type === "DRAFT_START") {
+                    const startTime = parseInt(rawStart, 10);
+                    return startTime;
+                }
             }
+
+            return null;
+        } catch (err) {
+            return null;
         }
 
-        return null;
-    } catch (err) {
-        return null;
     }
-}
 
 
-async function initLiveDraftClock() {
-    const xmlDoc = await fetchLiveDraftResultsXML();
-    if (!xmlDoc) return;
+    async function initLiveDraftClock() {
+        const xmlDoc = await fetchLiveDraftResultsXML();
+        if (!xmlDoc) return;
 
-    const meta = parseLiveDraftMeta(xmlDoc);
-    if (!meta || isNaN(meta.lastPickTime)) return;
+        const meta = parseLiveDraftMeta(xmlDoc);
+        if (!meta || isNaN(meta.lastPickTime)) return;
 
-    const draftStartTime = await fetchDraftStartTime();
-    const pickLimitSec = getPickTimeLimitInSeconds();
-    const deadline = meta.lastPickTime + pickLimitSec;
+        const draftStartTime = await fetchDraftStartTime();
+        const pickLimitSec = getPickTimeLimitInSeconds();
+        const deadline = meta.lastPickTime + pickLimitSec;
 
-    const container = document.querySelector("#player-pool-layout");
-    if (!container) return;
+        console.log("🧠 Draft Clock Initialized With:");
+        console.log("⏰ Current Unix Time:", Math.floor(Date.now() / 1000));
+        console.log("📌 Last Pick Time:", meta.lastPickTime);
+        console.log("🎯 Draft Start Time:", draftStartTime);
+        console.log("📏 Pick Time Limit (sec):", pickLimitSec);
+        console.log("🚀 Deadline (lastPick + limit):", deadline);
+        console.log("🔁 Pick Round/Pick:", meta.currentRound, meta.currentPick);
 
-    const timerDiv = document.createElement("div");
-    timerDiv.id = "live-draft-clock";
-    timerDiv.style.cssText = `
+        const container = document.querySelector("#player-pool-layout");
+        if (!container) return;
+
+        const timerDiv = document.createElement("div");
+        timerDiv.id = "live-draft-clock";
+        timerDiv.style.cssText = `
         background: var(--dark-color);
         color: #fff;
         padding: 8px;
@@ -1534,116 +1502,105 @@ async function initLiveDraftClock() {
         flex-direction: column;
         justify-content: center;
     `;
-    container.prepend(timerDiv);
+        container.prepend(timerDiv);
 
-    let interval;
+        let interval;
 
-function updateClock() {
-    const now = Math.floor(Date.now() / 1000);
-    const utcHour = new Date(now * 1000).getUTCHours();
-    const clockPaused = !isWithinActiveHoursUTC(utcHour);
+        function updateClock(deadline) {
+            const now = Math.floor(Date.now() / 1000);
+            console.log("🕒 updateClock()");
+            console.log("⏱️ Now:", now);
+            console.log("⏱️ Deadline:", deadline);
+            console.log("⏱️ Time Remaining:", Math.max(0, deadline - now));
+            const remaining = Math.max(0, deadline - now);
+            const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
+            let timeHtml = "";
 
-    const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
-
-    // 🧪 Logging for debugging
-    console.log("⏰ Current UTC timestamp:", now);
-    console.log("⌛ Draft Start Time:", draftStartTime);
-    console.log("🕓 Last Pick Time:", meta.lastPickTime);
-    console.log("📏 Pick Time Limit (sec):", pickLimitSec);
-    console.log("⏳ UTC Hour:", utcHour);
-    console.log("⏸️ Clock Paused:", clockPaused);
-
-    // 🕓 If draft not scheduled
-    if (draftStartTime === null) {
-        timerDiv.innerHTML = `
-            <div style="font-size: 16px;">Draft not scheduled</div>
-            <div style="font-size: 24px;">Waiting...</div>
-        `;
-        clearInterval(interval);
-        return;
-    }
-
-    // ⏳ Draft hasn't started yet
-    if (now < draftStartTime) {
-        console.log("🟡 Draft hasn't started yet");
-        const fullSec = pickLimitSec;
-        const h = Math.floor(fullSec / 3600);
-        const m = Math.floor((fullSec % 3600) / 60);
-
-        timerDiv.style.color = "#fff";
-        timerDiv.innerHTML = `
-            <div style="font-size: 16px;">Draft Not Started</div>
-            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
-                ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
-            </div>
-            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
-                <div style="width: 40px; text-align: center;">Hours</div>
-                <div style="width: 40px; text-align: center;">Minutes</div>
-            </div>
-        `;
-        return;
-    }
-
-    const activeSecondsElapsed = getActiveDraftSeconds(meta.lastPickTime, now);
-    const remaining = Math.max(0, pickLimitSec - activeSecondsElapsed);
-
-    // 🧪 More logging
-    console.log("⏱️ Active Seconds Elapsed:", activeSecondsElapsed);
-    console.log("🧮 Time Remaining:", remaining);
-
-    const h = Math.floor(remaining / 3600);
-    const m = Math.floor((remaining % 3600) / 60);
-    const s = remaining % 60;
-
-    timerDiv.style.color = remaining <= 10 ? "#ff4d4f" : "#fff";
-
-    let timeHtml = "";
-
-    if (h >= 1) {
-        timeHtml = `
-            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
-                ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
-            </div>
-            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
-                <div style="width: 40px; text-align: center;">Hours</div>
-                <div style="width: 40px; text-align: center;">Minutes</div>
-            </div>
-        `;
-    } else {
-        timeHtml = `
-            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
-                ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}
-            </div>
-            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
-                <div style="width: 40px; text-align: center;">Minutes</div>
-                <div style="width: 40px; text-align: center;">Seconds</div>
-            </div>
-        `;
-    }
-
-    timerDiv.innerHTML = `
-        <div style="font-size: 16px;">${roundInfo}</div>
-        ${timeHtml}
-        ${clockPaused ? '<div style="font-size: 16px; color: #ffa500;">⏸️ PAUSED</div>' : ''}
+            // 🛑 No draft scheduled
+            if (draftStartTime === null) {
+                // 🛑 Draft start time not found at all
+                timerDiv.innerHTML = `
+        <div style="font-size: 16px;">Draft not scheduled</div>
+        <div style="font-size: 24px;">Waiting...</div>
     `;
+                clearInterval(interval);
+                return;
+            }
 
-    if (remaining <= 0) {
-        console.log("❌ Clock expired — clearing interval");
-        clearInterval(interval);
-        timerDiv.innerHTML = `
+            console.log("🟡 Draft hasn't started yet — showing full time.");
+
+            if (now < draftStartTime) {
+                // 🟡 Draft scheduled but not started yet
+                const fullSec = pickLimitSec;
+                const h = Math.floor(fullSec / 3600);
+                const m = Math.floor((fullSec % 3600) / 60);
+
+                timerDiv.style.color = "#fff"; // reset color
+
+                timerDiv.innerHTML = `
+        <div style="font-size: 16px;">Draft Not Started</div>
+        <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+            ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
+        </div>
+        <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+            <div style="width: 40px; text-align: center;">Hours</div>
+            <div style="width: 40px; text-align: center;">Minutes</div>
+        </div>
+    `;
+                return;
+            }
+
+
+            // 🟢 Draft has started
+            const h = Math.floor(remaining / 3600);
+            const m = Math.floor((remaining % 3600) / 60);
+            const s = remaining % 60;
+
+            if (remaining <= 10) {
+                timerDiv.style.color = "#ff4d4f"; // 🔴 flash red near expiration
+            } else {
+                timerDiv.style.color = "#fff";
+            }
+
+            if (h >= 1) {
+                timeHtml = `
+                <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                    ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
+                </div>
+                <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                    <div style="width: 40px; text-align: center;">Hours</div>
+                    <div style="width: 40px; text-align: center;">Minutes</div>
+                </div>
+            `;
+            } else {
+                timeHtml = `
+                <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                    ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}
+                </div>
+                <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                    <div style="width: 40px; text-align: center;">Minutes</div>
+                    <div style="width: 40px; text-align: center;">Seconds</div>
+                </div>
+            `;
+            }
+
+            timerDiv.innerHTML = `
             <div style="font-size: 16px;">${roundInfo}</div>
-            <div style="font-size: 24px;">⛔ EXPIRED</div>
+            ${timeHtml}
         `;
+
+            if (remaining <= 0) {
+                clearInterval(interval);
+                timerDiv.innerHTML = `
+                <div style="font-size: 16px;">${roundInfo}</div>
+                <div style="font-size: 24px;">EXPIRED</div>
+            `;
+            }
+        }
+
+        updateClock(deadline);
+        interval = setInterval(() => updateClock(deadline), 1000);
     }
-}
-
-
-
-    
-
-    updateClock(deadline);
-    interval = setInterval(() => updateClock(deadline), 1000);
-}
 
 
 
@@ -1657,20 +1614,20 @@ function updateClock() {
     document.addEventListener("DOMContentLoaded", async () => {
         const leagueId = window.league_id || window.customLeagueId;
 
-        // ðŸŸ¢ 1. Load team info & bye weeks
+        // 🟢 1. Load team info & bye weeks
         window.teamInfo = await fetchTeamInfo(leagueId);
         window.byeWeeksMap = await fetchNFLByeWeeks(year);
 
-        // ðŸŸ¢ 2. Load previous year fantasy points
+        // 🟢 2. Load previous year fantasy points
         const lastYearScores = await fetchLastYearFantasyPoints();
 
-        // ðŸŸ¢ 3. Build UI
+        // 🟢 3. Build UI
         buildPlayerPoolTable(lastYearScores);
 
-        // ðŸŸ¢ 4. Start draft timer
+        // 🟢 4. Start draft timer
         initLiveDraftClock();
 
-        // ðŸŸ¢ 5. Track queued players
+        // 🟢 5. Track queued players
         const destinationList = document.querySelector('#destination_list');
         const queuedPlayerIDs = destinationList
             ? Array.from(destinationList.options).map(opt => opt.value)
@@ -1692,20 +1649,20 @@ function updateClock() {
 
         const playerQueueSidebar = document.querySelector("#player-queue-sidebar");
         if (playerQueueSidebar) {
-            console.log("Found #player-queue-sidebar â€” it's NOT your turn.");
+            console.log("Found #player-queue-sidebar — it's NOT your turn.");
             document.body.classList.add("not-your-turn");
         } else {
-            console.log("Did NOT find #player-queue-sidebar â€” it's YOUR turn.");
+            console.log("Did NOT find #player-queue-sidebar — it's YOUR turn.");
             document.body.classList.add("your-turn");
         }
 
-        // ðŸŸ¡ Initialize lastSeenDraftPickCount
+        // 🟡 Initialize lastSeenDraftPickCount
         const initialXml = await fetchLiveDraftResultsXML();
         const initialPicks = Array.from(initialXml?.querySelectorAll("draftPick") || []);
         lastSeenDraftPickCount = initialPicks.length;
-        console.log(`ðŸ“Œ Initialized lastSeenDraftPickCount = ${lastSeenDraftPickCount}`);
+        console.log(`📌 Initialized lastSeenDraftPickCount = ${lastSeenDraftPickCount}`);
 
-        // ðŸ” Start polling every 10 seconds
+        // 🔁 Start polling every 10 seconds
         setInterval(pollForDraftUpdates, 10000);
     });
 
