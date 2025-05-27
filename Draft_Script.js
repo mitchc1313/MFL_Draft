@@ -1546,7 +1546,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
             console.log("🟡 Draft hasn't started yet — showing full time.");
 
-            if (now < draftStartTime) {
+            if (lastPickTime === 0 && now < draftStartTime) {
                 // 🟡 Draft scheduled but not started yet
                 const fullSec = pickLimitSec;
                 const h = Math.floor(fullSec / 3600);
