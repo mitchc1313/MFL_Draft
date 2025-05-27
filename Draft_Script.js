@@ -229,23 +229,30 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     }
 
     function parseLiveDraftMeta(xmlDoc) {
-        const root = xmlDoc.querySelector("draftResults");
-        if (!root) return null;
+        const picks = Array.from(xmlDoc.getElementsByTagName("draftPick"));
+        let lastTimestamp = 0;
 
-        const currentFranchiseId = root.getAttribute("franchise_id");
-        const currentRound = parseInt(root.getAttribute("round"), 10);
-        const currentPick = parseInt(root.getAttribute("pick"), 10);
-        const lastPickTime = parseInt(root.getAttribute("last_pick_time"), 10);
-        const paused = root.getAttribute("paused") === "1";
+        for (let i = 0; i < picks.length; i++) {
+            const ts = picks[i].getAttribute("timestamp");
+
+            if (ts && !isNaN(ts)) {
+                lastTimestamp = parseInt(ts, 10);
+            } else {
+                // Stop as soon as we hit an unmade pick
+                break;
+            }
+        }
+
+        const draft = xmlDoc.querySelector("draftResults");
 
         return {
-            currentFranchiseId,
-            currentRound,
-            currentPick,
-            lastPickTime,
-            paused
+            lastPickTime: lastTimestamp,
+            currentRound: parseInt(draft?.getAttribute("round")) || 0,
+            currentPick: parseInt(draft?.getAttribute("pick")) || 0,
+            paused: draft?.getAttribute("paused") === "1"
         };
     }
+
 
 
 
