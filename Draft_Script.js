@@ -1538,64 +1538,65 @@ async function initLiveDraftClock() {
 
     let interval;
 
-    function updateClock() {
-        const now = Math.floor(Date.now() / 1000);
-        const utcHour = new Date(now * 1000).getUTCHours();
-        const clockPaused = !isWithinActiveHoursUTC(utcHour);
-    
-        const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
-    
-        // 🕓 If draft not scheduled
-        if (draftStartTime === null) {
-            timerDiv.innerHTML = `
-                <div style="font-size: 16px;">Draft not scheduled</div>
-                <div style="font-size: 24px;">Waiting...</div>
-            `;
-            clearInterval(interval);
-            return;
-        }
-    
-        // ⏳ If draft hasn't started yet
-        if (now < draftStartTime) {
-            const h = Math.floor(pickLimitSec / 3600);
-            const m = Math.floor((pickLimitSec % 3600) / 60);
-            timerDiv.innerHTML = `
-                <div style="font-size: 16px;">${roundInfo}</div>
-                <div style="font-size: 24px;">Draft has not started yet</div>
-                <div style="font-size: 20px;">Time limit per pick: ${h}h ${m}m</div>
-            `;
-            return;
-        }
-    
-        // ✅ Draft is live – calculate active time remaining
-        const activeSecondsElapsed = getActiveDraftSeconds(meta.lastPickTime, now);
-        const remaining = Math.max(0, pickLimitSec - activeSecondsElapsed);
-    
-        const h = Math.floor(remaining / 3600);
-        const m = Math.floor((remaining % 3600) / 60);
-        const s = remaining % 60;
-    
-        const padded = n => String(n).padStart(2, "0");
-    
-        const timeHtml = `
-            <div style="font-size: 16px;">${roundInfo}</div>
-            <div style="font-size: 50px; font-weight: 900;">
-                ${padded(h)}:${padded(m)}:${padded(s)}
-            </div>
-            ${clockPaused ? '<div style="font-size: 16px; color: #ffa500;">⏸️ PAUSED</div>' : ''}
+function updateClock() {
+    const now = Math.floor(Date.now() / 1000);
+    const utcHour = new Date(now * 1000).getUTCHours();
+    const clockPaused = !isWithinActiveHoursUTC(utcHour);
+
+    const roundInfo = `Round ${meta.currentRound}, Pick ${meta.currentPick}`;
+
+    // 🕓 If draft not scheduled
+    if (draftStartTime === null) {
+        timerDiv.innerHTML = `
+            <div style="font-size: 16px;">Draft not scheduled</div>
+            <div style="font-size: 24px;">Waiting...</div>
         `;
-    
-        timerDiv.style.color = remaining <= 300 ? "#ff4444" : "#ffffff"; // Red if < 5 min
-        timerDiv.innerHTML = timeHtml;
-    
-        if (remaining <= 0) {
-            clearInterval(interval);
-            timerDiv.innerHTML = `
-                <div style="font-size: 16px;">${roundInfo}</div>
-                <div style="font-size: 24px;">⛔ EXPIRED</div>
-            `;
-        }
+        clearInterval(interval);
+        return;
     }
+
+    // ⏳ If draft hasn't started yet
+    if (now < draftStartTime) {
+        const h = Math.floor(pickLimitSec / 3600);
+        const m = Math.floor((pickLimitSec % 3600) / 60);
+        timerDiv.innerHTML = `
+            <div style="font-size: 16px;">${roundInfo}</div>
+            <div style="font-size: 24px;">Draft has not started yet</div>
+            <div style="font-size: 20px;">Time limit per pick: ${h}h ${m}m</div>
+        `;
+        return;
+    }
+
+    // ✅ Draft is live – calculate active time remaining
+    const activeSecondsElapsed = getActiveDraftSeconds(meta.lastPickTime, now);
+    const remaining = Math.max(0, pickLimitSec - activeSecondsElapsed);
+
+    const h = Math.floor(remaining / 3600);
+    const m = Math.floor((remaining % 3600) / 60);
+    const s = remaining % 60;
+
+    const padded = n => String(n).padStart(2, "0");
+
+    const timeHtml = `
+        <div style="font-size: 16px;">${roundInfo}</div>
+        <div style="font-size: 50px; font-weight: 900;">
+            ${padded(h)}:${padded(m)}:${padded(s)}
+        </div>
+        ${clockPaused ? '<div style="font-size: 16px; color: #ffa500;">⏸️ PAUSED</div>' : ''}
+    `;
+
+    timerDiv.style.color = remaining <= 300 ? "#ff4444" : "#ffffff";
+    timerDiv.innerHTML = timeHtml;
+
+    if (remaining <= 0) {
+        clearInterval(interval);
+        timerDiv.innerHTML = `
+            <div style="font-size: 16px;">${roundInfo}</div>
+            <div style="font-size: 24px;">⛔ EXPIRED</div>
+        `;
+    }
+}
+
     
 
     updateClock(deadline);
