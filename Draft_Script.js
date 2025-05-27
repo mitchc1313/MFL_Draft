@@ -1473,7 +1473,10 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
         const draftStartTime = await fetchDraftStartTime();
         const pickLimitSec = getPickTimeLimitInSeconds();
-        const deadline = meta.lastPickTime + pickLimitSec;
+        const deadline = (meta.lastPickTime > 0)
+            ? meta.lastPickTime + pickLimitSec
+            : draftStartTime + pickLimitSec;
+
 
         console.log("🧠 Draft Clock Initialized With:");
         console.log("⏰ Current Unix Time:", Math.floor(Date.now() / 1000));
