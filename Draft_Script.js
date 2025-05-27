@@ -5,7 +5,14 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const xmlDoc = await fetchLiveDraftResultsXML();
             if (!xmlDoc) return;
 
+            console.log("📄 Raw Draft XML:", new XMLSerializer().serializeToString(xmlDoc));
+
+
             const picks = Array.from(xmlDoc?.querySelectorAll("draftPick") || []);
+            console.log("🎯 Total Picks Found:", picks.length);
+            if (picks.length > 0) {
+                console.log("🕓 Last Pick Timestamp:", picks[picks.length - 1].getAttribute("timestamp"));
+            }
             const currentPickCount = picks.length;
 
             if (currentPickCount > lastSeenDraftPickCount) {
