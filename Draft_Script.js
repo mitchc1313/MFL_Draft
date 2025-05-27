@@ -1523,7 +1523,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
         let interval;
 
-        function updateClock(deadline) {
+        function updateClock(deadline, lastPickTime) {
             const now = Math.floor(Date.now() / 1000);
             console.log("🕒 updateClock()");
             console.log("⏱️ Now:", now);
@@ -1615,8 +1615,9 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             }
         }
 
-        updateClock(deadline);
-        interval = setInterval(() => updateClock(deadline), 1000);
+        updateClock(deadline, meta.lastPickTime);
+        interval = setInterval(() => updateClock(deadline, meta.lastPickTime), 1000);
+
     }
 
 
