@@ -1555,19 +1555,28 @@ function updateClock() {
         return;
     }
 
-    // ⏳ If draft hasn't started yet
+    // ⏳ Draft hasn't started yet
     if (now < draftStartTime) {
-        const h = Math.floor(pickLimitSec / 3600);
-        const m = Math.floor((pickLimitSec % 3600) / 60);
+        const fullSec = pickLimitSec;
+        const h = Math.floor(fullSec / 3600);
+        const m = Math.floor((fullSec % 3600) / 60);
+
+        timerDiv.style.color = "#fff";
+
         timerDiv.innerHTML = `
-            <div style="font-size: 16px;">${roundInfo}</div>
-            <div style="font-size: 24px;">Draft has not started yet</div>
-            <div style="font-size: 20px;">Time limit per pick: ${h}h ${m}m</div>
+            <div style="font-size: 16px;">Draft Not Started</div>
+            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
+            </div>
+            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                <div style="width: 40px; text-align: center;">Hours</div>
+                <div style="width: 40px; text-align: center;">Minutes</div>
+            </div>
         `;
         return;
     }
 
-    // ✅ Draft is live – calculate active time remaining
+    // ✅ Draft has started – calculate remaining time
     const activeSecondsElapsed = getActiveDraftSeconds(meta.lastPickTime, now);
     const remaining = Math.max(0, pickLimitSec - activeSecondsElapsed);
 
@@ -1575,18 +1584,37 @@ function updateClock() {
     const m = Math.floor((remaining % 3600) / 60);
     const s = remaining % 60;
 
-    const padded = n => String(n).padStart(2, "0");
+    timerDiv.style.color = remaining <= 10 ? "#ff4d4f" : "#fff";
 
-    const timeHtml = `
+    let timeHtml = "";
+
+    if (h >= 1) {
+        timeHtml = `
+            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}
+            </div>
+            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                <div style="width: 40px; text-align: center;">Hours</div>
+                <div style="width: 40px; text-align: center;">Minutes</div>
+            </div>
+        `;
+    } else {
+        timeHtml = `
+            <div style="font-size: 50px; font-weight: 900; font-family:'Industry', sans-serif;">
+                ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}
+            </div>
+            <div style="display: flex; justify-content: center; gap: 30px; font-size: 10px; font-weight: normal; margin-top: -4px;">
+                <div style="width: 40px; text-align: center;">Minutes</div>
+                <div style="width: 40px; text-align: center;">Seconds</div>
+            </div>
+        `;
+    }
+
+    timerDiv.innerHTML = `
         <div style="font-size: 16px;">${roundInfo}</div>
-        <div style="font-size: 50px; font-weight: 900;">
-            ${padded(h)}:${padded(m)}:${padded(s)}
-        </div>
+        ${timeHtml}
         ${clockPaused ? '<div style="font-size: 16px; color: #ffa500;">⏸️ PAUSED</div>' : ''}
     `;
-
-    timerDiv.style.color = remaining <= 300 ? "#ff4444" : "#ffffff";
-    timerDiv.innerHTML = timeHtml;
 
     if (remaining <= 0) {
         clearInterval(interval);
@@ -1596,6 +1624,7 @@ function updateClock() {
         `;
     }
 }
+
 
     
 
