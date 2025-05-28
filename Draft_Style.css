@@ -142,11 +142,13 @@
         top: 20px;
         z-index: 20;
         background: white;
-        height: 105px;
+        height: 160px;
         gap: 10px 0;
         align-content: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         width: 101%;
+        flex-direction: column;
+        padding-bottom: 10px;
     }
 
     .your-turn .player-pool-header {
@@ -177,7 +179,7 @@
         width: 100%;
         border-collapse: collapse;
         font-family: 'Industry', sans-serif;
-        margin-top: 0;
+        margin: 0 auto
     }
 
     .player-pool-table th,
@@ -196,7 +198,7 @@
         box-shadow: none;
         padding: 2px;
         position: sticky;
-        top: 125px;
+        top: 180px;
         z-index: 10;
         height: 25px;
         border: none;
@@ -660,8 +662,7 @@
     }
 
     #options_52 .oddtablerow,
-    #new_predraft .eventablerow
-     {
+    #new_predraft .eventablerow {
         border-bottom: solid 1px #ddd;
     }
 
@@ -670,10 +671,10 @@
         background-color: #f2f2f2;
     }
 
-   #options_52 .oddtablerow td,
-   #new_predraft .oddtablerow td,
-   #options_52 .eventablerow td,
-   #new_predraft .eventablerow td {
+    #options_52 .oddtablerow td,
+    #new_predraft .oddtablerow td,
+    #options_52 .eventablerow td,
+    #new_predraft .eventablerow td {
         border: none;
     }
 
@@ -699,7 +700,8 @@
             flex-direction: column;
             align-items: center;
             height: calc(100vh - 140px);
-            height: calc(100dvh - 140px); /* preferred for new browsers */
+            height: calc(100dvh - 140px);
+            /* preferred for new browsers */
             min-height: 573px;
         }
 
@@ -763,8 +765,8 @@
             overflow-x: auto;
             overflow-y: hidden;
             height: 99px;
-            padding-left: 140px!important;
-            padding-bottom: 72px!important;
+            padding-left: 140px !important;
+            padding-bottom: 72px !important;
         }
 
         .player-pool-table th {
