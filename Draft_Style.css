@@ -799,3 +799,7 @@
             font-size: 10px;
         }
     }
+
+    #add_drop footer {
+        position: fixed !important;
+    }
