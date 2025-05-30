@@ -148,6 +148,10 @@
         display: none;
     }
 
+    .custom-round-label {
+        margin-right: 10px;
+    }
+
     #player-queue-sidebar {
         grid-area: 2 / 4 / 5 / 5;
         min-width: 250px;
@@ -358,6 +362,10 @@
         width: 250px;
         transition: transform 0.3s ease, transform-origin 0.3s ease;
         transform-origin: top left;
+    }
+
+    #add_drop .filter-wrapper .player-filter {
+        margin-right: 10px;
     }
 
     @keyframes fadeInSlideUp {
@@ -759,7 +767,6 @@
         }
 
         .player-pool-header {
-            height: 65px;
             align-content: flex-start;
         }
     }
