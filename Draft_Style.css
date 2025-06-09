@@ -297,6 +297,9 @@
 
     .player-pool-header select {
         color: var(--dark-color);
+        height: 30px;
+        margin-right: 10px;
+        padding-right: 5px;
     }
 
     .mobile-nav-draft {
@@ -779,6 +782,7 @@
         .player-pool-header select,
         .player-pool-header input {
             font-size: 10px;
+            height: 21px;
         }
 
         .player-pool-header .queue-btn {
