@@ -748,7 +748,7 @@
         #live-draft-clock {
             position: absolute;
             width: 190px;
-            left: 0;
+            left: 5vw;
             z-index: 3;
             transform: scale(0.7);
         }
