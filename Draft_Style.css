@@ -772,6 +772,7 @@
         .player-pool-header {
             align-content: flex-start;
             height: 120px;
+            padding-bottom:0;
         }
     }
 
