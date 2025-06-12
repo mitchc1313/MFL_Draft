@@ -766,11 +766,12 @@
         }
 
         .player-pool-table th {
-            top: 180px;
+            top: 140px;
         }
 
         .player-pool-header {
             align-content: flex-start;
+            height: 120px;
         }
     }
 
