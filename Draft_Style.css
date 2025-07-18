@@ -229,7 +229,7 @@
         object-fit: cover;
     }
 
-    .player-name-wrapper .player-name {
+    .player-cell .player-name {
         font-weight: 600;
         font-size: 12px;
         text-align: left;
