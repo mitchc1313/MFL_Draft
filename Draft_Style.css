@@ -502,6 +502,7 @@
         min-width: 45px;
         color: var(--dark-color);
         font-style: normal;
+        margin-bottom: 5px;
     }
 
     .roster-pos.QB-draft-pos,
