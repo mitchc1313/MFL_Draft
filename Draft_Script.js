@@ -1104,6 +1104,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
                 const posDiv = document.createElement("div");
                 posDiv.className = "roster-pos";
+                posDiv.classList.add(`${pos}-draft-pos`);
                 posDiv.textContent = `${pos}:`;
 
                 const nameDiv = document.createElement("div");
