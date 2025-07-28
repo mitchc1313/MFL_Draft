@@ -1132,6 +1132,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
             const labelDiv = document.createElement("div");
             labelDiv.className = "roster-pos";
+            labelDiv.classList.add("FLEX-draft-pos");
             labelDiv.textContent = "FLEX:";
 
             const nameDiv = document.createElement("div");
