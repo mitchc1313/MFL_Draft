@@ -1105,7 +1105,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 const posDiv = document.createElement("div");
                 posDiv.className = "roster-pos";
                 posDiv.classList.add(`${pos}-draft-pos`);
-                posDiv.textContent = `${pos}:`;
+                posDiv.textContent = `${pos}`;
 
                 const nameDiv = document.createElement("div");
                 nameDiv.className = "roster-name";
@@ -1133,7 +1133,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             const labelDiv = document.createElement("div");
             labelDiv.className = "roster-pos";
             labelDiv.classList.add("FLEX-draft-pos");
-            labelDiv.textContent = "FLEX:";
+            labelDiv.textContent = "FLEX";
 
             const nameDiv = document.createElement("div");
             nameDiv.className = "roster-name";
