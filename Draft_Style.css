@@ -540,6 +540,10 @@
             background-color: var(--def-color);
         }
 
+     .roster-pos.FLEX-draft-pos {
+        background-color: var(--dark-color);
+        }
+
     .roster-line.header .roster-name,
     .roster-line.header .roster-pos,
     .roster-line.header .roster-bye {
