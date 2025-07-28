@@ -497,7 +497,6 @@
     }
 
     .roster-pos {
-        flex: 0.5;
         font-weight: 900;
         min-width: 35px;
         color: var(--dark-color);
