@@ -548,6 +548,32 @@
         background-color: var(--dark-color);
         }
 
+      td.pos-QB, .queue-pos.pos-QB {
+            color: var(--qb-color);
+            font-weight: 900;
+        }
+
+ td.pos-RB, .queue-pos.pos-RB {
+            color: var(--rb-color);
+            font-weight: 900;
+        }
+
+ td.pos-WR, .queue-pos.pos-WR {
+            color: var(--wr-color);
+            font-weight: 900;
+        }
+
+ td.pos-TE, .queue-pos.pos-TE {
+            color: var(--te-color);
+            font-weight: 900;
+        }
+
+ td.pos-DEF, .queue-pos.pos-DEF {
+            color: var(--def-color);
+            font-weight: 900;
+        }
+
+
     .roster-line.header .roster-name,
     .roster-line.header .roster-pos,
     .roster-line.header .roster-bye {
