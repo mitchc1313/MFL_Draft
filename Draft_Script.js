@@ -551,7 +551,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
               <a href="${baseURLDynamic}/${year}/player?L=${league_id}&P=${player.id}" target="_blank" rel="noopener noreferrer">${fullName}</a>
             </div>
           </td>
-          <td class="player-position-td">${player.pos}</td>
+          <td class="player-position-td pos-${player.pos.toUpperCase()}">${player.pos}</td>
           <td class="player-team-td">${player.nfl_team}</td>
           <td class="bye-week-td">${player.bye_week}</td>
           <td class="player-adp">${player.adp !== 9999 ? player.adp.toFixed(1) : "—"}</td>
@@ -1243,7 +1243,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                     ${fullName}
                     <div class="queue-rank">Rank: ${playerRank}</div>
                 </div>
-                <div class="queue-pos">${player.pos}</div>
+                <div class="queue-pos pos-${player.pos.toUpperCase()}">${player.pos}</div>
                 <div class="queue-team">${player.nfl_team}</div>
             </div>
         `;
