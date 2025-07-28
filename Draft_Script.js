@@ -78,7 +78,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     }
 
     function injectMobileViewButtons() {
-        if (window.innerWidth > 900) return;
+        if (document.documentElement.clientWidth > 900) return;
         if (document.querySelector(".mobile-nav-draft")) return;
 
         const nav = document.createElement("div");
@@ -118,9 +118,9 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
     function handleResizeForMobileNav() {
         const existingNav = document.querySelector(".mobile-nav-draft");
 
-        if (window.innerWidth <= 900 && !existingNav) {
+        if (document.documentElement.clientWidth <= 900 && !existingNav) {
             injectMobileViewButtons();
-        } else if (window.innerWidth > 900 && existingNav) {
+        } else if (document.documentElement.clientWidth > 900 && existingNav) {
             existingNav.remove();
             document.body.classList.remove("view-roster", "view-pool", "view-queue");
         }
@@ -985,7 +985,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
                 if (currentPickEl) {
                     const container = document.getElementById("draftBoard-wrapper");
-                    let offset = window.innerWidth <= 900 ? 208 : 116; // Default offsets
+                    let offset = document.documentElement.clientWidth <= 900 ? 208 : 116; // Default offsets
 
                     const allDraftPicks = Array.from(container.querySelectorAll(".draft-pick, .round-divider"));
                     const currentIndex = allDraftPicks.indexOf(currentPickEl);
