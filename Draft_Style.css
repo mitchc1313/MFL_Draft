@@ -492,17 +492,16 @@
         font-size: 12px;
         gap: 8px;
         align-items: center;
-        margin-bottom: 3px;
+        margin-bottom: 8px;
         padding-left: 10px;
     }
 
     .roster-pos {
         flex: 0.5;
         font-weight: 900;
-        min-width: 45px;
+        min-width: 35px;
         color: var(--dark-color);
         font-style: normal;
-        margin-bottom: 5px;
     }
 
     .roster-pos.QB-draft-pos,
@@ -510,12 +509,14 @@
     .roster-pos.WR-draft-pos,
     .roster-pos.TE-draft-pos,
     .roster-pos.DEF-draft-pos {
-        height: 45px;
+        height: 35px;
+        width: 40px,
         align-items: center;
         display: flex;
         justify-content: center;
         color: white;
-        border-radius: 13px;
+        border-radius: 30%;
+        font-size: 12px;
     }
 
     .roster-pos.QB-draft-pos {
