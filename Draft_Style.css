@@ -511,7 +511,7 @@
     .roster-pos.DEF-draft-pos,
     .roster-pos.FLEX-draft-pos {
         height: 35px;
-        width: 40px,
+        width: 40px;
         align-items: center;
         display: flex;
         justify-content: center;
