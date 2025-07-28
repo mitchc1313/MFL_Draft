@@ -224,10 +224,15 @@
 
     .player-img,
     .queue-img img {
-        width: 100%;
-        height: auto;
+        width: 80%;
+        height: 100%;
         object-fit: cover;
     }
+
+    .queue-img-wrapper .player-img {
+        margin-left: 4px;
+    }
+
 
     .player-cell .player-name {
         font-weight: 600;
