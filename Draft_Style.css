@@ -570,6 +570,7 @@
  td.pos-DEF, .queue-pos.pos-DEF {
             color: var(--def-color);
             font-weight: 900;
+            text-transform: uppercase;
         }
 
 
