@@ -229,7 +229,7 @@
         object-fit: contain;
     }
 
-.player-queue-sidebar .player-img-wrapper {
+#player-queue-sidebar .player-img-wrapper {
     height:36px;
 }
 
