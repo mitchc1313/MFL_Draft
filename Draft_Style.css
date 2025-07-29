@@ -851,13 +851,6 @@
             gap: 5px 0;
         }
 
-        .not-your-turn th[data-sort-key="adp"],
-        .not-your-turn th[data-sort-key="nfl_team"],
-        .not-your-turn td.ly-scores-td,
-        .not-your-turn td.player-team-td{
-            display: none;
-        }
-
         .player-pool-header select,
         .player-pool-header input {
             font-size: 10px;
@@ -878,3 +871,12 @@
     #add_drop footer {
         position: fixed !important;
     }
+
+@media (min-width: 900px) and (max-width: 980px) {
+        .not-your-turn th[data-sort-key="adp"],
+        .not-your-turn th[data-sort-key="nfl_team"],
+        .not-your-turn td.player-adp,
+        .not-your-turn td.player-team-td {
+            display: none;
+        }
+}
