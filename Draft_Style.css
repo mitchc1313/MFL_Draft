@@ -229,6 +229,10 @@
         object-fit: contain;
     }
 
+.player-queue-sidebar .player-img-wrapper {
+    height:36px;
+}
+
     .player-cell .player-name {
         font-weight: 600;
         font-size: 12px;
