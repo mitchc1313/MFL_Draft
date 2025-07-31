@@ -638,35 +638,6 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             });
         }
 
-
-
-        if (isQueueMode) {
-            const submitBtn = document.createElement("button");
-            submitBtn.textContent = "Submit Queue";
-            submitBtn.className = "queue-btn";
-            submitBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                submitQueuePlayers();
-            });
-
-
-            const clearBtn = document.createElement("button");
-            clearBtn.textContent = "Clear Queue";
-            clearBtn.className = "queue-btn clear-btn";
-            clearBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                clearQueuedPlayers();
-            });
-
-            const buttonWrapper = document.createElement("div");
-            buttonWrapper.className = "button-wrapper";
-            buttonWrapper.appendChild(submitBtn);
-            buttonWrapper.appendChild(clearBtn);
-
-            headerDiv.appendChild(buttonWrapper);
-
-        }
-
         container.appendChild(table);
         renderPlayerPoolRows(sortedPlayers);
 
