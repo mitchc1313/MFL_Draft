@@ -345,6 +345,14 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         container.id = "player-pool-container";
         container.className = "draft-view";
 
+
+        // 🧱 NEW: Wrap all three control elements in a container
+        const playerControlsWrapper = document.createElement("div");
+        playerControlsWrapper.id = "player-pool-controls-wrapper";
+        playerControlsWrapper.style.display = "flex";
+        playerControlsWrapper.style.flexDirection = "column";
+        playerControlsWrapper.style.gap = "8px";
+
         // 🆕 Add sticky <h3> header directly into container
         const poolHeader = document.createElement("h3");
         poolHeader.textContent = "Player Pool";
@@ -412,7 +420,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         buttonWrapper.appendChild(submitBtn);
 
         topControls.appendChild(buttonWrapper);
-        container.appendChild(topControls);
+        
 
         // 🆕 Bottom Controls: Search + Position Filter
         const bottomControls = document.createElement("div");
@@ -445,7 +453,12 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 
         bottomControls.appendChild(nameSearch);
         bottomControls.appendChild(positionFilter);
-        container.appendChild(bottomControls);
+        
+        // 🔄 Append all to wrapper
+        playerControlsWrapper.appendChild(poolHeader);
+        playerControlsWrapper.appendChild(topControls);
+        playerControlsWrapper.appendChild(bottomControls);
+        container.appendChild(playerControlsWrapper);
 
         layoutWrapper.appendChild(container); // ✅ Add player pool to center
 
