@@ -136,6 +136,14 @@
         padding-bottom: 10px;
     }
 
+    #player-pool-controls-wrapper {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        padding-bottom: 13px;
+    }
+
+
     .your-turn .player-pool-header {
         top: 25px;
     }
@@ -187,7 +195,7 @@
         box-shadow: none;
         padding: 2px;
         position: sticky;
-        top: 180px;
+        top: 124px;
         z-index: 10;
         height: 25px;
         border: none;
@@ -837,7 +845,7 @@
         }
 
         .player-pool-table th {
-            top: 140px;
+            top: 124px;
         }
 
         .player-pool-header {
