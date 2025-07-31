@@ -412,12 +412,20 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         clearBtn.style.padding = "0";
         clearBtn.innerHTML = `<i class="fa-solid fa-trash" style="margin: 0 auto; padding: 0;"></i>`;
         buttonWrapper.appendChild(clearBtn);
+        clearBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            clearQueuedPlayers();
+        });
 
         const submitBtn = document.createElement("button");
         submitBtn.className = "queue-btn";
         submitBtn.style.backgroundColor = "var(--primary-color)";
         submitBtn.textContent = "Submit";
         buttonWrapper.appendChild(submitBtn);
+        submitBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            submitQueuePlayers();
+        });
 
         topControls.appendChild(buttonWrapper);
         
