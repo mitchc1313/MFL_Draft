@@ -345,31 +345,37 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         container.id = "player-pool-container";
         container.className = "draft-view";
 
-        // 🔽 Add h3 header
+        // 🆕 Add sticky <h3> header directly into container
         const poolHeader = document.createElement("h3");
         poolHeader.textContent = "Player Pool";
-        poolHeader.style.margin = "0 0 0 0";
+        poolHeader.style.margin = "0";
         poolHeader.style.backgroundColor = "white";
         poolHeader.style.position = "sticky";
         poolHeader.style.top = "0";
         poolHeader.style.zIndex = "10";
-        poolHeader.style.padding = "0";
+        poolHeader.style.padding = "0px";
+        poolHeader.style.paddingLeft = "20px";
         container.appendChild(poolHeader);
 
-        const headerDiv = document.createElement("div");
-        headerDiv.className = "player-pool-header";
+        // 🆕 Create Top Control Row: Round selector + buttons
+        const topControls = document.createElement("div");
+        topControls.style.display = "flex";
+        topControls.style.justifyContent = "space-between";
 
-        // Round label + dropdown container
+        // Round Selector Section
         const roundWrapper = document.createElement("div");
         roundWrapper.className = "round-wrapper";
+        roundWrapper.style.paddingLeft = "20px";
+        roundWrapper.style.paddingTop = "10px";
 
-        // Round label
+        // Round Label
         const customLabel = document.createElement("div");
-        customLabel.textContent = "Player Queue for:";
         customLabel.className = "custom-round-label";
+        customLabel.style.display = "none";
+        customLabel.textContent = "Player Queue for:";
         roundWrapper.appendChild(customLabel);
 
-        // Round form (optional, only if exists)
+        // Form (if exists)
         const roundForm = document.querySelector('form.reportform[action="new_predraft"]');
         if (roundForm) {
             roundForm.style.display = "flex";
@@ -380,19 +386,38 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
             });
             roundWrapper.appendChild(roundForm);
         }
+        topControls.appendChild(roundWrapper);
 
-        positionFilter = document.createElement("select");
-        positionFilter.id = "position-filter";
-        positionFilter.className = "player-filter";
+        // Button Group (Clear & Submit)
+        const buttonWrapper = document.createElement("div");
+        buttonWrapper.className = "button-wrapper";
+        buttonWrapper.style.marginRight = "20px";
+        buttonWrapper.style.display = "flex";
+        buttonWrapper.style.gap = "9px";
 
-        // Build the options based on window.positionOptions
-        (window.positionOptions || []).forEach(opt => {
-            const optionEl = document.createElement("option");
-            optionEl.value = opt.value;
-            optionEl.textContent = opt.label;
-            positionFilter.appendChild(optionEl);
-        });
+        const clearBtn = document.createElement("button");
+        clearBtn.className = "queue-btn clear-btn";
+        clearBtn.style.borderRadius = "50%";
+        clearBtn.style.height = "36px";
+        clearBtn.style.width = "36px";
+        clearBtn.style.margin = "0";
+        clearBtn.style.padding = "0";
+        clearBtn.innerHTML = `<i class="fa-solid fa-trash" style="margin: 0 auto; padding: 0;"></i>`;
+        buttonWrapper.appendChild(clearBtn);
 
+        const submitBtn = document.createElement("button");
+        submitBtn.className = "queue-btn";
+        submitBtn.style.backgroundColor = "var(--primary-color)";
+        submitBtn.textContent = "Submit";
+        buttonWrapper.appendChild(submitBtn);
+
+        topControls.appendChild(buttonWrapper);
+        container.appendChild(topControls);
+
+        // 🆕 Bottom Controls: Search + Position Filter
+        const bottomControls = document.createElement("div");
+        bottomControls.style.display = "flex";
+        bottomControls.style.justifyContent = "space-between";
 
         // Name Search Input
         nameSearch = document.createElement("input");
@@ -400,22 +425,28 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         nameSearch.placeholder = "Player Search...";
         nameSearch.id = "player-name-search";
         nameSearch.className = "player-filter";
+        nameSearch.style.marginLeft = "20px";
+        nameSearch.style.marginTop = "10px";
+        nameSearch.style.fontSize = "13px";
+        nameSearch.style.paddingLeft = "7px";
 
+        // Position Filter Dropdown
+        positionFilter = document.createElement("select");
+        positionFilter.id = "position-filter";
+        positionFilter.className = "player-filter";
+        positionFilter.style.marginRight = "20px";
+        positionFilter.style.marginTop = "18px";
+        (window.positionOptions || []).forEach(opt => {
+            const optionEl = document.createElement("option");
+            optionEl.value = opt.value;
+            optionEl.textContent = opt.label;
+            positionFilter.appendChild(optionEl);
+        });
 
+        bottomControls.appendChild(nameSearch);
+        bottomControls.appendChild(positionFilter);
+        container.appendChild(bottomControls);
 
-        // FILTER WRAPPER
-        const filterWrapper = document.createElement("div");
-        filterWrapper.className = "filter-wrapper";
-        filterWrapper.appendChild(positionFilter);
-        filterWrapper.appendChild(nameSearch);
-        headerDiv.appendChild(filterWrapper);
-
-        // ROUND WRAPPER (already created earlier, just attach it)
-        headerDiv.appendChild(roundWrapper);
-
-
-
-        container.appendChild(headerDiv); // ✅ Add header to player pool container
         layoutWrapper.appendChild(container); // ✅ Add player pool to center
 
         if (showQueueSidebar) {
