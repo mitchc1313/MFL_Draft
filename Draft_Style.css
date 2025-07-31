@@ -525,14 +525,14 @@
     .roster-pos.TE-draft-pos,
     .roster-pos.DEF-draft-pos,
     .roster-pos.FLEX-draft-pos {
-        height: 35px;
-        width: 40px;
+        height: 25px;
+        width: 30px;
         align-items: center;
         display: flex;
         justify-content: center;
         color: white;
-        border-radius: 30%;
-        font-size: 12px;
+        border-radius: 21%;
+        font-size: 11px;
     }
 
     .roster-pos.QB-draft-pos {
