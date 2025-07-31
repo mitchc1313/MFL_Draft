@@ -282,6 +282,10 @@
         align-items: center;
     }
 
+    .round-wrapper input[type=submit] {
+        display: none;
+    }
+
 
     /* =====================
    HEADER & FILTERS
