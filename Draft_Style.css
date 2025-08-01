@@ -2,6 +2,12 @@
    PAGE-SPECIFIC SETUP
 ===================== */
 
+     #body_options_52,
+    #body_new_predraft {
+        width:90%!important;
+        margin: auto;
+    }
+
     #body_options_52 h3,
     #body_new_predraft h3 {
         font-family: 'Industry', sans-serif;
@@ -149,7 +155,7 @@
     }
 
     .your-turn .player-pool-table th {
-        top: 90px;
+        top: 133px;
     }
 
     .your-turn .custom-round-label {
@@ -353,7 +359,7 @@
         background: #fff;
         display: flex;
         justify-content: space-around;
-        padding: 6px 0;
+        padding: 0;
         z-index: 999;
         box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.08);
     }
@@ -371,7 +377,7 @@
         align-items: center;
         gap: 4px;
         cursor: pointer;
-        padding: 6px 4px;
+        padding: 12px 4px;
         transition: background-color 0.2s, transform 0.2s;
     }
 
