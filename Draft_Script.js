@@ -450,6 +450,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         positionFilter.id = "position-filter";
         positionFilter.className = "player-filter";
         positionFilter.style.marginRight = "20px";
+        positionFilter.style.marginTop = "2px";
         (window.positionOptions || []).forEach(opt => {
             const optionEl = document.createElement("option");
             optionEl.value = opt.value;
