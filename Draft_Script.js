@@ -502,18 +502,21 @@ positions.forEach((pos, index) => {
         btn.style.borderRadius = "8px";
     }
 
-    btn.addEventListener("click", () => {
+       btn.addEventListener("click", () => {
         document.querySelectorAll(".position-tab").forEach(b => {
-            b.style.backgroundColor = "white";
+            b.style.backgroundColor = "white";  // Reset all
             b.style.color = "#666";
             b.style.border = "none";
         });
+    
+        btn.style.backgroundColor = "rgba(0, 151, 252, 0.2)";  // ACTIVE style
         btn.style.color = "var(--dark-color)";
         btn.style.border = "2px solid var(--primary-color)";
         btn.style.borderRadius = "8px";
-
+    
         filterByPosition(btn.dataset.position);
     });
+
 
     tabsWrapper.appendChild(btn);
 });
