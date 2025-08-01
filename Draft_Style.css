@@ -342,7 +342,7 @@
     #position-tabs {
       display: flex;
       white-space: nowrap;
-      max-width: 182px;
+      max-width: 222px;
       scrollbar-width: thin; /* optional: Firefox */
       scrollbar-color: #ccc transparent; /* optional */
       margin-bottom: 15px;
