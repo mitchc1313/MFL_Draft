@@ -482,7 +482,6 @@ scrollWrapper.style.maxWidth = "220px";  // adjust as needed for layout
 // Inner tab container
 const tabsWrapper = document.createElement("div");
 tabsWrapper.id = "position-tabs";
-tabsWrapper.style.display = "flex";
 tabsWrapper.style.gap = "4px";
 tabsWrapper.style.border = "1px solid #ccc";
 tabsWrapper.style.borderRadius = "8px";
