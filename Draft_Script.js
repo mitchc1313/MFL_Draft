@@ -399,6 +399,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         // Button Group (Clear & Submit)
         const buttonWrapper = document.createElement("div");
         buttonWrapper.className = "button-wrapper";
+        buttonWrapper.style.alignItems = "center";
         buttonWrapper.style.marginRight = "20px";
         buttonWrapper.style.display = "flex";
         buttonWrapper.style.gap = "9px";
@@ -408,6 +409,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         clearBtn.style.borderRadius = "50%";
         clearBtn.style.height = "30px";
         clearBtn.style.width = "30px";
+        clearBtn.style.color = "white";
         clearBtn.style.margin = "0";
         clearBtn.style.padding = "0";
         clearBtn.innerHTML = `<i class="fa-solid fa-trash" style="margin: 0 auto; padding: 0;"></i>`;
@@ -420,6 +422,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const submitBtn = document.createElement("button");
         submitBtn.className = "queue-btn";
         submitBtn.style.backgroundColor = "var(--primary-color)";
+        submitBtn.style.color = "white";
         submitBtn.textContent = "Submit";
         buttonWrapper.appendChild(submitBtn);
         submitBtn.addEventListener("click", (e) => {
