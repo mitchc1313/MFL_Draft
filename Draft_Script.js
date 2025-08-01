@@ -493,6 +493,7 @@ positions.forEach((pos, index) => {
     btn.style.cursor = "pointer";
     btn.style.transition = "all 0.2s ease";
     btn.style.fontSize = "11px";
+    btn.style.backgroundColor = "white";
 
     if (index === 0) {
         btn.style.color = "var(--dark-color)";
@@ -503,7 +504,7 @@ positions.forEach((pos, index) => {
 
     btn.addEventListener("click", () => {
         document.querySelectorAll(".position-tab").forEach(b => {
-            b.style.background = "white";
+            b.style.backgroundColor = "white";
             b.style.color = "#666";
             b.style.border = "none";
         });
