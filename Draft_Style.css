@@ -195,7 +195,7 @@
         box-shadow: none;
         padding: 2px;
         position: sticky;
-        top: 112px;
+        top: 128px;
         z-index: 10;
         height: 25px;
         border: none;
@@ -880,7 +880,7 @@
         }
 
         .player-pool-table th {
-            top: 112px;
+            top: 128px;
         }
 
         .player-pool-header {
@@ -926,5 +926,9 @@
 
     #position-tabs-scroll-wrapper {
         display: none;
+    }
+
+    ..player-pool-table th {
+        top: 112px;
     }
 }
