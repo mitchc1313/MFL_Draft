@@ -326,6 +326,10 @@
           font-size: 13px;
     }
 
+    .position-tab {
+        background: rgba(0,151,252,.2);
+    }
+
     .player-pool-header select {
         color: var(--dark-color);
         height: 30px;
