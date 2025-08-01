@@ -280,10 +280,15 @@
     .round-wrapper {
         display: flex;
         align-items: center;
+        font-size: 11px;
     }
 
     .round-wrapper input[type=submit] {
         display: none;
+    }
+
+    #player-name-search {
+        font-size: 11px;
     }
 
 
@@ -875,10 +880,6 @@
             margin: 0 0px 0 5px;
             font-size: 9px;
             height: 25px;
-        }
-
-        .round-wrapper {
-            font-size: 10px;
         }
     }
 
