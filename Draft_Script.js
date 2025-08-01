@@ -434,7 +434,7 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
 const bottomControls = document.createElement("div");
 bottomControls.style.display = "flex";
 bottomControls.style.justifyContent = "space-between";
-bottomControls.style.alignItems = "center";
+bottomControls.style.alignItems = "top";
 
 // 🔍 Name Search Input
 nameSearch = document.createElement("input");
