@@ -469,7 +469,7 @@ positionFilter.appendChild(defaultOption);
 bottomControls.appendChild(positionFilter);
 
 // 🖥 Desktop: Tab-style Buttons (always injected)
-const positions = ["All", "QB", "WR", "RB", "TE", "DEF"];
+const positions = window.draftPositionTabs || ["All", "QB", "WR", "RB", "TE", "K", "DEF"];
 const tabsWrapper = document.createElement("div");
 tabsWrapper.id = "position-tabs";
 tabsWrapper.style.display = "flex";
