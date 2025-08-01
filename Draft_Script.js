@@ -1801,59 +1801,67 @@ bottomControls.appendChild(scrollWrapper);
 
     let lastSeenDraftPickCount = 0;
 
-    document.addEventListener("DOMContentLoaded", async () => {
-        const leagueId = window.league_id || window.customLeagueId;
+   document.addEventListener("DOMContentLoaded", async () => {
 
-        // 🟢 1. Load team info & bye weeks
-        window.teamInfo = await fetchTeamInfo(leagueId);
-        window.byeWeeksMap = await fetchNFLByeWeeks(year);
+    // ✅ Show #contentframe if it contains a warning message
+    const contentFrame = document.querySelector("#contentframe");
+    if (contentFrame && contentFrame.querySelector("h3.warning")) {
+        contentFrame.style.display = "block";
+    }
 
-        // 🟢 2. Load previous year fantasy points
-        const lastYearScores = await fetchLastYearFantasyPoints();
+    const leagueId = window.league_id || window.customLeagueId;
 
-        // 🟢 3. Build UI
-        buildPlayerPoolTable(lastYearScores);
+    // 🟢 1. Load team info & bye weeks
+    window.teamInfo = await fetchTeamInfo(leagueId);
+    window.byeWeeksMap = await fetchNFLByeWeeks(year);
 
-        // 🟢 4. Start draft timer
-        initLiveDraftClock();
+    // 🟢 2. Load previous year fantasy points
+    const lastYearScores = await fetchLastYearFantasyPoints();
 
-        // 🟢 5. Track queued players
-        const destinationList = document.querySelector('#destination_list');
-        const queuedPlayerIDs = destinationList
-            ? Array.from(destinationList.options).map(opt => opt.value)
-            : [];
+    // 🟢 3. Build UI
+    buildPlayerPoolTable(lastYearScores);
 
-        queuedPlayerIDs.forEach(playerId => {
-            const button = document.querySelector(`button.draft-btn[data-player-id="${playerId}"]`);
-            if (button) {
-                button.classList.add("queued-player");
-                button.textContent = "Remove";
-            }
-        });
+    // 🟢 4. Start draft timer
+    initLiveDraftClock();
 
-        renderQueueSidebar();
-        injectMobileViewButtons();
+    // 🟢 5. Track queued players
+    const destinationList = document.querySelector('#destination_list');
+    const queuedPlayerIDs = destinationList
+        ? Array.from(destinationList.options).map(opt => opt.value)
+        : [];
 
-        handleResizeForMobileNav();
-        window.addEventListener("resize", handleResizeForMobileNav);
-
-        const playerQueueSidebar = document.querySelector("#player-queue-sidebar");
-        if (playerQueueSidebar) {
-            console.log("Found #player-queue-sidebar — it's NOT your turn.");
-            document.body.classList.add("not-your-turn");
-        } else {
-            console.log("Did NOT find #player-queue-sidebar — it's YOUR turn.");
-            document.body.classList.add("your-turn");
+    queuedPlayerIDs.forEach(playerId => {
+        const button = document.querySelector(`button.draft-btn[data-player-id="${playerId}"]`);
+        if (button) {
+            button.classList.add("queued-player");
+            button.textContent = "Remove";
         }
-
-        // 🟡 Initialize lastSeenDraftPickCount
-        const initialXml = await fetchLiveDraftResultsXML();
-        const initialPicks = Array.from(initialXml?.querySelectorAll("draftPick") || []);
-        lastSeenDraftPickCount = initialPicks.length;
-        console.log(`📌 Initialized lastSeenDraftPickCount = ${lastSeenDraftPickCount}`);
-
-        // 🔁 Start polling every 10 seconds
-        setInterval(pollForDraftUpdates, 10000);
     });
+
+    renderQueueSidebar();
+    injectMobileViewButtons();
+
+    handleResizeForMobileNav();
+    window.addEventListener("resize", handleResizeForMobileNav);
+
+    const playerQueueSidebar = document.querySelector("#player-queue-sidebar");
+    if (playerQueueSidebar) {
+        console.log("Found #player-queue-sidebar — it's NOT your turn.");
+        document.body.classList.add("not-your-turn");
+    } else {
+        console.log("Did NOT find #player-queue-sidebar — it's YOUR turn.");
+        document.body.classList.add("your-turn");
+    }
+
+    // 🟡 Initialize lastSeenDraftPickCount
+    const initialXml = await fetchLiveDraftResultsXML();
+    const initialPicks = Array.from(initialXml?.querySelectorAll("draftPick") || []);
+    lastSeenDraftPickCount = initialPicks.length;
+    console.log(`📌 Initialized lastSeenDraftPickCount = ${lastSeenDraftPickCount}`);
+
+    // 🔁 Start polling every 10 seconds
+    setInterval(pollForDraftUpdates, 10000);
+});
+
 
 }
