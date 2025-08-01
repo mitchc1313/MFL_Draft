@@ -480,6 +480,7 @@ tabsWrapper.style.overflow = "hidden";
 tabsWrapper.style.marginRight = "20px";
 tabsWrapper.style.marginTop = "2px";
 tabsWrapper.style.height = "32px";
+tabsWrapper.style.minWidth = "182px";
 
 positions.forEach((pos, index) => {
     const btn = document.createElement("button");
