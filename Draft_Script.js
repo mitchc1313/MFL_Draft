@@ -472,7 +472,6 @@ bottomControls.appendChild(positionFilter);
 const positions = window.draftPositionTabs || ["All", "QB", "WR", "RB", "TE", "K", "DEF"];
 const tabsWrapper = document.createElement("div");
 tabsWrapper.id = "position-tabs";
-tabsWrapper.style.display = "flex";
 tabsWrapper.style.justifyContent = "space-around";
 tabsWrapper.style.border = "1px solid #ccc";
 tabsWrapper.style.borderRadius = "8px";
