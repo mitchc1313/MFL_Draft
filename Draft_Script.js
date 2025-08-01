@@ -443,7 +443,7 @@ nameSearch.placeholder = "Player Search...";
 nameSearch.id = "player-name-search";
 nameSearch.className = "player-filter";
 nameSearch.style.marginLeft = "20px";
-nameSearch.style.fontSize = "13px";
+nameSearch.style.fontSize = "11px";
 nameSearch.style.paddingLeft = "7px";
 bottomControls.appendChild(nameSearch);
 
@@ -488,15 +488,14 @@ positions.forEach((pos, index) => {
     btn.dataset.position = pos === "All" ? "" : pos;
     btn.style.padding = "4px 0";
     btn.style.border = "none";
-    btn.style.background = "white";
     btn.style.color = "#666";
     btn.style.fontWeight = "900";
     btn.style.cursor = "pointer";
     btn.style.transition = "all 0.2s ease";
-    btn.style.fontSize = "13px";
+    btn.style.fontSize = "11px";
 
     if (index === 0) {
-        btn.style.color = "black";
+        btn.style.color = "var(--dark-color)";
         btn.style.border = "2px solid var(--primary-color)";
         btn.style.borderRadius = "8px";
     }
@@ -507,7 +506,7 @@ positions.forEach((pos, index) => {
             b.style.color = "#666";
             b.style.border = "none";
         });
-        btn.style.color = "black";
+        btn.style.color = "var(--dark-color)";
         btn.style.border = "2px solid var(--primary-color)";
         btn.style.borderRadius = "8px";
 
