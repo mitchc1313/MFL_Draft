@@ -894,6 +894,10 @@
             height: 120px;
             padding-bottom:0;
         }
+
+        .your-turn .player-pool-table th {
+    top: 133px;
+}
     }
 
     @media (max-width: 980px) {
@@ -936,5 +940,9 @@
 
     .player-pool-table th {
         top: 123px;
+    }
+
+    .your-turn .player-pool-table th {
+        top: 119px
     }
 }
