@@ -205,7 +205,7 @@
         box-shadow: none;
         padding: 2px;
         position: sticky;
-        top: 137px;
+        top: 128px;
         z-index: 10;
         height: 25px;
         border: none;
@@ -943,7 +943,7 @@
     }
 
     .player-pool-table th {
-        top: 123px;
+        top: 112px;
     }
 
     .your-turn .player-pool-table th {
