@@ -613,9 +613,9 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         let filteredPlayers = sortedPlayers.slice(); // full list initially
 
         function applyFilters() {
-            const selectedPos = positionFilter.value;
-            const searchTerm = nameSearch.value.trim().toLowerCase();
-
+            const selectedPos = positionFilter ? positionFilter.value : "";  // Safe access
+            const searchTerm = nameSearch?.value.trim().toLowerCase() || "";
+        
             filteredPlayers = sortedPlayers.filter(player => {
                 const matchesPosition = !selectedPos || player.pos.toUpperCase() === selectedPos;
                 const [last, first] = player.name.split(", ");
@@ -623,23 +623,29 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
                 const matchesName = fullName.includes(searchTerm);
                 return matchesPosition && matchesName;
             });
-
+        
             renderPlayerPoolRows(filteredPlayers);
         }
-
-        positionFilter.addEventListener("change", applyFilters);
-        nameSearch.addEventListener("input", applyFilters);
-
+        
+        // ✅ Only add listeners if the elements exist
+        if (positionFilter) {
+            positionFilter.addEventListener("change", applyFilters);
+        }
+        if (nameSearch) {
+            nameSearch.addEventListener("input", applyFilters);
+        }
+        
         function filterByPosition(position) {
             if (positionFilter) {
                 positionFilter.value = position;
                 positionFilter.dispatchEvent(new Event("change"));
             } else {
-                // Fallback: manually filter table if needed
-                const evt = new CustomEvent("filterPosition", { detail: position });
-                document.dispatchEvent(evt);
+                // Fallback for desktop/tab mode — apply filter directly
+                const filtered = sortedPlayers.filter(p => p.pos.toUpperCase() === position);
+                renderPlayerPoolRows(filtered);
             }
         }
+        
         
 
 
