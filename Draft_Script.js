@@ -1806,7 +1806,8 @@ bottomControls.appendChild(scrollWrapper);
     // ✅ Show #contentframe if it contains a warning message
     const contentFrame = document.querySelector("#contentframe");
     if (contentFrame && contentFrame.querySelector("h3.warning")) {
-        contentFrame.style.display = "block";
+        contentFrame.style.display = "block";       // In case it's display: none
+        contentFrame.style.visibility = "visible";  // In case it's visibility: hidden
     }
 
     const leagueId = window.league_id || window.customLeagueId;
