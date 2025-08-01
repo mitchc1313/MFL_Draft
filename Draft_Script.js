@@ -468,18 +468,27 @@ positionFilter.appendChild(defaultOption);
 
 bottomControls.appendChild(positionFilter);
 
-// 🖥 Desktop: Tab-style Buttons (always injected)
+// 🖥 Desktop: Tab-style Buttons inside scrollable wrapper
 const positions = window.draftPositionTabs || ["All", "QB", "WR", "RB", "TE", "K", "DEF"];
+
+// Scroll container
+const scrollWrapper = document.createElement("div");
+scrollWrapper.id = "position-tabs-scroll-wrapper";
+scrollWrapper.style.overflowX = "auto";
+scrollWrapper.style.marginRight = "20px";
+scrollWrapper.style.marginTop = "2px";
+scrollWrapper.style.maxWidth = "220px";  // adjust as needed for layout
+
+// Inner tab container
 const tabsWrapper = document.createElement("div");
 tabsWrapper.id = "position-tabs";
-tabsWrapper.style.justifyContent = "space-around";
+tabsWrapper.style.display = "flex";
+tabsWrapper.style.gap = "4px";
 tabsWrapper.style.border = "1px solid #ccc";
 tabsWrapper.style.borderRadius = "8px";
-tabsWrapper.style.overflow = "hidden";
-tabsWrapper.style.marginRight = "20px";
-tabsWrapper.style.marginTop = "2px";
 tabsWrapper.style.height = "32px";
-tabsWrapper.style.minWidth = "182px";
+tabsWrapper.style.minWidth = "max-content";
+
 
 positions.forEach((pos, index) => {
     const btn = document.createElement("button");
@@ -521,7 +530,9 @@ positions.forEach((pos, index) => {
     tabsWrapper.appendChild(btn);
 });
 
-bottomControls.appendChild(tabsWrapper);
+scrollWrapper.appendChild(tabsWrapper);
+bottomControls.appendChild(scrollWrapper);
+
 
         
         // 🔄 Append all to wrapper
