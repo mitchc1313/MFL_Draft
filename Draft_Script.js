@@ -431,99 +431,97 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         
 
         // 🆕 Bottom Controls: Search + Position Filter
-        const bottomControls = document.createElement("div");
-        bottomControls.style.display = "flex";
-        bottomControls.style.justifyContent = "space-between";
+const bottomControls = document.createElement("div");
+bottomControls.style.display = "flex";
+bottomControls.style.justifyContent = "space-between";
+bottomControls.style.alignItems = "center";
 
-        // Name Search Input
-        nameSearch = document.createElement("input");
-        nameSearch.type = "text";
-        nameSearch.placeholder = "Player Search...";
-        nameSearch.id = "player-name-search";
-        nameSearch.className = "player-filter";
-        nameSearch.style.marginLeft = "20px";
-        nameSearch.style.fontSize = "13px";
-        nameSearch.style.paddingLeft = "7px";
+// 🔍 Name Search Input
+nameSearch = document.createElement("input");
+nameSearch.type = "text";
+nameSearch.placeholder = "Player Search...";
+nameSearch.id = "player-name-search";
+nameSearch.className = "player-filter";
+nameSearch.style.marginLeft = "20px";
+nameSearch.style.fontSize = "13px";
+nameSearch.style.paddingLeft = "7px";
+bottomControls.appendChild(nameSearch);
 
-        if (window.innerWidth > 900) {
-            // Desktop: use tab-style buttons
-            const positions = ["QB", "WR", "RB", "TE", "K", "DEF"];
-            const tabsWrapper = document.createElement("div");
-            tabsWrapper.id = "position-tabs";
-            tabsWrapper.style.display = "flex";
-            tabsWrapper.style.justifyContent = "space-around";
-            tabsWrapper.style.border = "1px solid #ccc";
-            tabsWrapper.style.borderRadius = "8px";
-            tabsWrapper.style.overflow = "hidden";
-            tabsWrapper.style.marginRight = "20px";
-            tabsWrapper.style.marginTop = "2px";
-            tabsWrapper.style.height = "32px";
-        
-            positions.forEach((pos, index) => {
-                const btn = document.createElement("button");
-                btn.className = "position-tab";
-                btn.textContent = pos;
-                btn.dataset.position = pos;
-                btn.style.flex = "1";
-                btn.style.padding = "4px 0";
-                btn.style.border = "none";
-                btn.style.background = "white";
-                btn.style.color = "#666";
-                btn.style.fontWeight = "bold";
-                btn.style.cursor = "pointer";
-                btn.style.transition = "all 0.2s ease";
-                btn.style.fontSize = "13px";
-        
-                // Default active state for first tab
-                if (index === 0) {
-                    btn.style.background = "var(--primary-light)";
-                    btn.style.color = "black";
-                    btn.style.border = "2px solid var(--primary-color)";
-                    btn.style.borderRadius = "8px";
-                }
-        
-                btn.addEventListener("click", () => {
-                    document.querySelectorAll(".position-tab").forEach(b => {
-                        b.style.background = "white";
-                        b.style.color = "#666";
-                        b.style.border = "none";
-                    });
-                    btn.style.background = "var(--primary-light)";
-                    btn.style.color = "black";
-                    btn.style.border = "2px solid var(--primary-color)";
-                    btn.style.borderRadius = "8px";
-        
-                    filterByPosition(pos);
-                });
-        
-                tabsWrapper.appendChild(btn);
-            });
-        
-            bottomControls.appendChild(tabsWrapper);
-        
-        } else {
-            // Mobile: use traditional dropdown
-            positionFilter = document.createElement("select");
-            positionFilter.id = "position-filter";
-            positionFilter.className = "player-filter";
-            positionFilter.style.marginRight = "20px";
-            positionFilter.style.marginTop = "2px";
-        
-            (window.positionOptions || []).forEach(opt => {
-                const optionEl = document.createElement("option");
-                optionEl.value = opt.value;
-                optionEl.textContent = opt.label;
-                positionFilter.appendChild(optionEl);
-            });
-        
-            if (positionFilter) {
-                bottomControls.appendChild(positionFilter);
-            }
-            
-        }
+// 📱 Mobile: Traditional Dropdown (always injected)
+positionFilter = document.createElement("select");
+positionFilter.id = "position-filter";
+positionFilter.className = "player-filter";
+positionFilter.style.marginRight = "20px";
+positionFilter.style.marginTop = "2px";
 
-        bottomControls.appendChild(nameSearch);
-        
+const defaultOption = document.createElement("option");
+defaultOption.value = "";
+defaultOption.textContent = "All Positions";
+positionFilter.appendChild(defaultOption);
+
+(window.positionOptions || []).forEach(opt => {
+    const optionEl = document.createElement("option");
+    optionEl.value = opt.value;
+    optionEl.textContent = opt.label;
+    positionFilter.appendChild(optionEl);
+});
+
+bottomControls.appendChild(positionFilter);
+
+// 🖥 Desktop: Tab-style Buttons (always injected)
+const positions = ["All", "QB", "WR", "RB", "TE", "K", "DEF"];
+const tabsWrapper = document.createElement("div");
+tabsWrapper.id = "position-tabs";
+tabsWrapper.style.display = "flex";
+tabsWrapper.style.justifyContent = "space-around";
+tabsWrapper.style.border = "1px solid #ccc";
+tabsWrapper.style.borderRadius = "8px";
+tabsWrapper.style.overflow = "hidden";
+tabsWrapper.style.marginRight = "20px";
+tabsWrapper.style.marginTop = "2px";
+tabsWrapper.style.height = "32px";
+
+positions.forEach((pos, index) => {
+    const btn = document.createElement("button");
+    btn.className = "position-tab";
+    btn.textContent = pos;
+    btn.dataset.position = pos === "All" ? "" : pos;
+    btn.style.flex = "1";
+    btn.style.padding = "4px 0";
+    btn.style.border = "none";
+    btn.style.background = "white";
+    btn.style.color = "#666";
+    btn.style.fontWeight = "bold";
+    btn.style.cursor = "pointer";
+    btn.style.transition = "all 0.2s ease";
+    btn.style.fontSize = "13px";
+
+    if (index === 0) {
+        btn.style.background = "var(--primary-light)";
+        btn.style.color = "black";
+        btn.style.border = "2px solid var(--primary-color)";
+        btn.style.borderRadius = "8px";
+    }
+
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".position-tab").forEach(b => {
+            b.style.background = "white";
+            b.style.color = "#666";
+            b.style.border = "none";
+        });
+        btn.style.background = "var(--primary-light)";
+        btn.style.color = "black";
+        btn.style.border = "2px solid var(--primary-color)";
+        btn.style.borderRadius = "8px";
+
+        filterByPosition(btn.dataset.position);
+    });
+
+    tabsWrapper.appendChild(btn);
+});
+
+bottomControls.appendChild(tabsWrapper);
+
         
         // 🔄 Append all to wrapper
         playerControlsWrapper.appendChild(poolHeader);
