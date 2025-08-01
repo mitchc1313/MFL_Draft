@@ -733,6 +733,10 @@
         border: solid 2px var(--dark-color);
     }
 
+    #position-filter {
+        display: none;
+    }
+
     /* =====================
    UTILITIES / TEXT / COLORS
 ===================== */
@@ -904,4 +908,12 @@
         .not-your-turn td.player-team-td {
             display: none;
         }
+
+     #position-filter {
+        display: unset;
+    }
+
+    #position-tabs {
+        display: none;
+    }
 }
