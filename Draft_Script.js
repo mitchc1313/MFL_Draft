@@ -498,7 +498,7 @@ positions.forEach((pos, index) => {
     if (index === 0) {
         btn.style.color = "var(--dark-color)";
         btn.style.border = "2px solid var(--primary-color)";
-        btn.style.backgroundColor = "rgba(0, 151, 252, 0.2);"
+        btn.style.backgroundColor = "rgba(0, 151, 252, 0.2)";
         btn.style.borderRadius = "8px";
     }
 
