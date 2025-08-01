@@ -318,6 +318,14 @@
         background-color: var(--primary-color);
     }
 
+    #position-tabs .position-tab {
+          flex: 1;
+          min-width: max-content;
+          text-align: center;
+          padding: 4px 0;
+          font-size: 13px;
+    }
+
     .player-pool-header select {
         color: var(--dark-color);
         height: 30px;
