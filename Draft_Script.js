@@ -497,7 +497,7 @@ positions.forEach((pos, index) => {
     btn.className = "position-tab";
     btn.textContent = pos;
     btn.dataset.position = pos === "All" ? "" : pos;
-    btn.style.padding = "4px 0";
+    btn.style.padding = "5px 0 2px";
     btn.style.border = "none";
     btn.style.color = "#666";
     btn.style.fontWeight = "900";
@@ -509,7 +509,7 @@ positions.forEach((pos, index) => {
     if (index === 0) {
         btn.style.color = "var(--dark-color)";
         btn.style.border = "2px solid var(--primary-color)";
-        btn.style.backgroundColor = "rgba(0, 151, 252, 0.2)";
+        btn.style.backgroundColor = "var(--primary-fade, rgba(0, 151, 252, 0.2))";
         btn.style.borderRadius = "8px";
     }
 
@@ -520,7 +520,7 @@ positions.forEach((pos, index) => {
             b.style.border = "none";
         });
     
-        btn.style.backgroundColor = "rgba(0, 151, 252, 0.2)";  // ACTIVE style
+        btn.style.backgroundColor = "var(--primary-fade, rgba(0, 151, 252, 0.2))";  // ACTIVE style
         btn.style.color = "var(--dark-color)";
         btn.style.border = "2px solid var(--primary-color)";
         btn.style.borderRadius = "8px";
