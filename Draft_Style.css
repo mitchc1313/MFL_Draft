@@ -320,7 +320,7 @@
 
     #position-tabs .position-tab {
           flex: 1;
-          min-width: max-content;
+          width: 30px;
           text-align: center;
           padding: 4px 0;
           font-size: 13px;
