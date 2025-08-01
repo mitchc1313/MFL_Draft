@@ -327,6 +327,15 @@
           font-size: 13px;
     }
 
+    #position-tabs {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      max-width: 182px;
+      scrollbar-width: thin; /* optional: Firefox */
+      scrollbar-color: #ccc transparent; /* optional */
+    }
+
     .player-pool-header select {
         color: var(--dark-color);
         height: 30px;
