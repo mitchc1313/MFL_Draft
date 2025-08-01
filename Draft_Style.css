@@ -924,7 +924,7 @@
         display: unset;
     }
 
-    #position-tabs {
+    #position-tabs-scroll-wrapper {
         display: none;
     }
 }
