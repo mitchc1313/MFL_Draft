@@ -195,7 +195,7 @@
         box-shadow: none;
         padding: 2px;
         position: sticky;
-        top: 99px;
+        top: 113px;
         z-index: 10;
         height: 25px;
         border: none;
@@ -290,6 +290,7 @@
     #player-name-search {
         font-size: 11px;
         border: solid 1px #ededed;
+        height: 31px;
     }
 
 
@@ -864,7 +865,7 @@
         }
 
         .player-pool-table th {
-            top: 124px;
+            top: 113px;
         }
 
         .player-pool-header {
