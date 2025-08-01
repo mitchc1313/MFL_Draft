@@ -913,7 +913,7 @@
         display: unset;
     }
 
-    #position-tabs {
+    .position-tabs {
         display: none;
     }
 }
