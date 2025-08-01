@@ -201,7 +201,7 @@
         box-shadow: none;
         padding: 2px;
         position: sticky;
-        top: 128px;
+        top: 137px;
         z-index: 10;
         height: 25px;
         border: none;
@@ -934,7 +934,7 @@
         display: none;
     }
 
-    ..player-pool-table th {
-        top: 112px;
+    .player-pool-table th {
+        top: 123px;
     }
 }
