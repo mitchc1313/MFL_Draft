@@ -486,12 +486,11 @@ positions.forEach((pos, index) => {
     btn.className = "position-tab";
     btn.textContent = pos;
     btn.dataset.position = pos === "All" ? "" : pos;
-    btn.style.flex = "1";
     btn.style.padding = "4px 0";
     btn.style.border = "none";
     btn.style.background = "white";
     btn.style.color = "#666";
-    btn.style.fontWeight = "bold";
+    btn.style.fontWeight = "900";
     btn.style.cursor = "pointer";
     btn.style.transition = "all 0.2s ease";
     btn.style.fontSize = "13px";
