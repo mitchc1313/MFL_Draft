@@ -406,8 +406,8 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         const clearBtn = document.createElement("button");
         clearBtn.className = "queue-btn clear-btn";
         clearBtn.style.borderRadius = "50%";
-        clearBtn.style.height = "36px";
-        clearBtn.style.width = "36px";
+        clearBtn.style.height = "30px";
+        clearBtn.style.width = "30px";
         clearBtn.style.margin = "0";
         clearBtn.style.padding = "0";
         clearBtn.innerHTML = `<i class="fa-solid fa-trash" style="margin: 0 auto; padding: 0;"></i>`;
