@@ -496,7 +496,6 @@ positions.forEach((pos, index) => {
     btn.style.fontSize = "13px";
 
     if (index === 0) {
-        btn.style.background = "var(--primary-light)";
         btn.style.color = "black";
         btn.style.border = "2px solid var(--primary-color)";
         btn.style.borderRadius = "8px";
@@ -508,7 +507,6 @@ positions.forEach((pos, index) => {
             b.style.color = "#666";
             b.style.border = "none";
         });
-        btn.style.background = "var(--primary-light)";
         btn.style.color = "black";
         btn.style.border = "2px solid var(--primary-color)";
         btn.style.borderRadius = "8px";
