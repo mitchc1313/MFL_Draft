@@ -442,7 +442,6 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         nameSearch.id = "player-name-search";
         nameSearch.className = "player-filter";
         nameSearch.style.marginLeft = "20px";
-        nameSearch.style.marginTop = "10px";
         nameSearch.style.fontSize = "13px";
         nameSearch.style.paddingLeft = "7px";
 
@@ -451,7 +450,6 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         positionFilter.id = "position-filter";
         positionFilter.className = "player-filter";
         positionFilter.style.marginRight = "20px";
-        positionFilter.style.marginTop = "18px";
         (window.positionOptions || []).forEach(opt => {
             const optionEl = document.createElement("option");
             optionEl.value = opt.value;
