@@ -846,14 +846,16 @@
         }
 
         #player-queue-sidebar {
-          
+            height: calc(100vh - 260px);
+            height: calc(100dvh - 260px); /* fallback for iOS/modern devices */
             width: 90%;
             border-left: none;
             margin-top: 25px;
         }
 
         #player-pool-container {
-            
+            height: calc(100vh - 260px);
+            height: calc(100dvh - 260px); /* fallback for iOS/modern devices */
             min-width: 400px;
             width: 90%;
             overflow-x: hidden;
@@ -861,7 +863,8 @@
 
         #team-roster-view {
             min-width: 250px;
-            
+            height: calc(100vh - 260px);
+            height: calc(100dvh - 260px); /* fallback for iOS/modern devices */
             width: 90%;
             overflow-y: auto;
         }
