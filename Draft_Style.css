@@ -842,6 +842,7 @@
             min-width: unset;
             border-right: none;
             padding-right: 0;
+            padding-left: 0;
         }
 
         #player-queue-sidebar {
