@@ -846,8 +846,8 @@
         }
 
         #player-queue-sidebar {
-            height: calc(100vh - 260px);
-            height: calc(100dvh - 260px); /* fallback for iOS/modern devices */
+            height: calc(100vh - 268px);
+            height: calc(100dvh - 268px); /* fallback for iOS/modern devices */
             width: 90%;
             border-left: none;
             margin-top: 25px;
