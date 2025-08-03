@@ -189,7 +189,7 @@
         margin: 0 auto
     }
 
-    .player-pool-table th,
+    
     .player-pool-table td {
         padding: 5px;
         text-align: center;
@@ -203,7 +203,7 @@
         font-size: 10px;
         color: white;
         box-shadow: none;
-        padding: 2px;
+        padding: 0px;
         position: sticky;
         top: 128px;
         z-index: 10;
