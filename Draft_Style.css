@@ -80,6 +80,7 @@
         height: 141px;
         overflow-x: auto;
         box-sizing: border-box;
+        z-index: 1;
     }
 
     #draftBoard {
