@@ -70,7 +70,7 @@
         border-radius: 4px;
         height: 90vh;
         overflow-y: hidden;
-        min-width: 400px;
+        min-width: 390px;
     }
 
     #draftBoard-wrapper {
@@ -152,6 +152,7 @@
         position: sticky;
         top: 0;
         background-color: white;
+        z-index: 3;
         padding-bottom: 13px;
     }
 
@@ -898,7 +899,7 @@
         }
 
         .player-pool-table th {
-            top: 128px;
+            top: 135px;
         }
 
         .player-pool-header {
