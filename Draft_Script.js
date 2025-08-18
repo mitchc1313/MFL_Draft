@@ -258,30 +258,39 @@ if (document.querySelector("#options_52") || document.querySelector("#new_predra
         }
     }
 
-    function parseLiveDraftMeta(xmlDoc) {
-        const picks = Array.from(xmlDoc.getElementsByTagName("draftPick"));
-        let lastTimestamp = 0;
+function parseLiveDraftMeta(xmlDoc) {
+    const picks = Array.from(xmlDoc.querySelectorAll("draftPick") || []);
+    const draft = xmlDoc.querySelector("draftResults");
 
-        for (let i = 0; i < picks.length; i++) {
-            const ts = picks[i].getAttribute("timestamp");
+    let lastPickTime = 0;
+    let currentRound = 1;
+    let currentPick = 1;
 
-            if (ts && !isNaN(ts)) {
-                lastTimestamp = parseInt(ts, 10);
-            } else {
-                // Stop as soon as we hit an unmade pick
-                break;
-            }
+    // 🔁 Loop from end to start to find last non-keeper pick
+    for (let i = picks.length - 1; i >= 0; i--) {
+        const pick = picks[i];
+        const comment = pick.getAttribute("comments") || "";
+        const timestamp = parseInt(pick.getAttribute("timestamp"), 10);
+
+        if (!comment.includes("[Keeper.]") && !isNaN(timestamp)) {
+            lastPickTime = timestamp;
+            break;
         }
-
-        const draft = xmlDoc.querySelector("draftResults");
-
-        return {
-            lastPickTime: lastTimestamp,
-            currentRound: parseInt(draft?.getAttribute("round")) || 0,
-            currentPick: parseInt(draft?.getAttribute("pick")) || 0,
-            paused: draft?.getAttribute("paused") === "1"
-        };
     }
+
+    // ✅ Fallback: use <draftResults> tag for round/pick if available
+    if (draft) {
+        currentRound = parseInt(draft.getAttribute("round")) || currentRound;
+        currentPick = parseInt(draft.getAttribute("pick")) || currentPick;
+    }
+
+    return {
+        lastPickTime,
+        currentRound,
+        currentPick,
+        paused: draft?.getAttribute("paused") === "1"
+    };
+}
 
 
 
